@@ -1,0 +1,220 @@
+# Bangalore RL Traffic Control - Training Configuration
+# This file defines all training hyperparameters
+
+# =============================================================================
+# GENERAL TRAINING SETTINGS
+# =============================================================================
+training:
+  # Total training timesteps
+  total_timesteps: 1_000_000
+
+  # Number of parallel environments
+  n_envs: 4
+
+  # Evaluation frequency
+  eval_freq: 10_000
+
+  # Number of evaluation episodes
+  n_eval_episodes: 10
+
+  # Save best model
+  save_best: true
+
+  # Checkpoint frequency
+  checkpoint_freq: 50_000
+
+  # Random seed
+  seed: 42
+
+  # Device (auto, cuda, cpu)
+  device: "auto"
+
+# =============================================================================
+# CURRICULUM LEARNING STAGES
+# =============================================================================
+curriculum:
+  enabled: true
+
+  stages:
+    - name: "stage_1_basic"
+      description: "Basic signal control without complexities"
+      timesteps: 200_000
+      settings:
+        queue_mode: "baseline"
+        weather_enabled: false
+        emergency_enabled: false
+        num_junctions: 1 # Single junction (Silk Board)
+        demand_multiplier: 0.5
+
+    - name: "stage_2_weather"
+      description: "Add weather variations"
+      timesteps: 200_000
+      settings:
+        queue_mode: "baseline"
+        weather_enabled: true
+        emergency_enabled: false
+        num_junctions: 1
+        demand_multiplier: 0.7
+
+    - name: "stage_3_emergency"
+      description: "Add emergency vehicle handling"
+      timesteps: 200_000
+      settings:
+        queue_mode: "realistic_bangalore"
+        weather_enabled: false
+        emergency_enabled: true
+        num_junctions: 1
+        demand_multiplier: 0.8
+        emergency_probability: 0.02
+
+    - name: "stage_4_multi_junction"
+      description: "Multi-junction coordination"
+      timesteps: 200_000
+      settings:
+        queue_mode: "realistic_bangalore"
+        weather_enabled: false
+        emergency_enabled: false
+        num_junctions: 4 # All junctions
+        demand_multiplier: 1.0
+
+    - name: "stage_5_full"
+      description: "Full complexity - production ready"
+      timesteps: 200_000
+      settings:
+        queue_mode: "realistic_bangalore"
+        weather_enabled: true
+        emergency_enabled: true
+        num_junctions: 4
+        demand_multiplier: 1.0
+        emergency_probability: 0.01
+        rain_probability: 0.15
+
+# =============================================================================
+# Q-LEARNING CONFIGURATION
+# =============================================================================
+qlearning:
+  # Learning rate
+  alpha: 0.1
+
+  # Discount factor
+  gamma: 0.95
+
+  # Exploration settings
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay: 0.995
+
+  # State discretization bins
+  queue_bins: 10
+  speed_bins: 5
+
+  # Training episodes
+  episodes: 500
+
+# =============================================================================
+# DQN CONFIGURATION
+# =============================================================================
+dqn:
+  # Network architecture
+  network:
+    hidden_layers: [256, 256, 128]
+    activation: "relu"
+
+  # Learning parameters
+  learning_rate: 0.001
+  gamma: 0.95
+
+  # Exploration
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay: 0.995
+
+  # Experience replay
+  buffer_size: 100_000
+  batch_size: 64
+  learning_starts: 1000
+
+  # Target network
+  target_update_freq: 500
+
+  # Training
+  train_freq: 4
+  gradient_steps: 1
+
+# =============================================================================
+# PPO CONFIGURATION (PRODUCTION MODEL)
+# =============================================================================
+ppo:
+  # Policy network
+  policy: "MlpPolicy"
+
+  # Network architecture
+  policy_kwargs:
+    net_arch:
+      pi: [256, 256, 128] # Policy network
+      vf: [256, 256, 128] # Value network
+    activation_fn: "torch.nn.ReLU"
+
+  # Core hyperparameters
+  learning_rate: 0.0003
+  gamma: 0.95
+  gae_lambda: 0.95
+
+  # PPO-specific
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  clip_range: 0.2
+  clip_range_vf: null
+
+  # Entropy coefficient for exploration
+  ent_coef: 0.01
+
+  # Value function coefficient
+  vf_coef: 0.5
+
+  # Max gradient norm
+  max_grad_norm: 0.5
+
+  # Advantage normalization
+  normalize_advantage: true
+
+# =============================================================================
+# CALLBACKS & MONITORING
+# =============================================================================
+callbacks:
+  # TensorBoard logging
+  tensorboard:
+    enabled: true
+    log_dir: "./models/logs/tensorboard"
+
+  # Weights & Biases (optional)
+  wandb:
+    enabled: false
+    project: "bangalore-traffic-rl"
+    entity: null
+
+  # Checkpointing
+  checkpoint:
+    enabled: true
+    save_path: "./models/checkpoints"
+    save_freq: 50_000
+
+  # Early stopping
+  early_stopping:
+    enabled: false
+    patience: 100_000
+    min_delta: 0.01
+
+# =============================================================================
+# MODEL SAVING
+# =============================================================================
+save:
+  # Directory for final models
+  model_dir: "./models"
+
+  # Best model path
+  best_model_path: "./models/best_ppo"
+
+  # Save format
+  format: "zip" # For stable-baselines3

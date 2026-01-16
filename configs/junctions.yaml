@@ -1,0 +1,326 @@
+# Bangalore Target Junctions Configuration
+# Real GPS coordinates and detailed junction information
+
+# =============================================================================
+# BOUNDING BOX FOR OSM DOWNLOAD
+# =============================================================================
+osm:
+  # Bounding box covering all 4 target junctions
+  # Format: [min_lon, min_lat, max_lon, max_lat]
+  bounding_box: [77.55, 12.88, 77.72, 13.06]
+
+  # Individual junction bounding boxes (for focused extraction)
+  junction_boxes:
+    silk_board:
+      bbox: [77.615, 12.912, 77.630, 12.925]
+      center: [77.6221, 12.9173]
+
+    tin_factory:
+      bbox: [77.635, 12.965, 77.650, 12.980]
+      center: [77.6412, 12.9716]
+
+    hebbal:
+      bbox: [77.590, 13.030, 77.610, 13.045]
+      center: [77.5972, 13.0358]
+
+    marathahalli:
+      bbox: [77.695, 12.952, 77.710, 12.968]
+      center: [77.7011, 12.9591]
+
+# =============================================================================
+# SILK BOARD JUNCTION (Primary Focus)
+# =============================================================================
+silk_board:
+  id: "silk_board"
+  name: "Silk Board Junction"
+  description: "Most congested junction in Bangalore - 6-way intersection"
+
+  # GPS coordinates
+  latitude: 12.9173
+  longitude: 77.6221
+
+  # Junction characteristics
+  type: "signalized"
+  geometry: "6-way"
+  elevation: 920 # meters above sea level
+
+  # Traffic characteristics
+  traffic:
+    peak_delay_minutes: 45 # Average delay during peak
+    aadt: 150000 # Annual Average Daily Traffic
+    peak_hours:
+      morning: [8, 10]
+      evening: [18, 20]
+
+  # Approach roads
+  approaches:
+    - name: "Hosur Road North"
+      direction: "north"
+      lanes: 4
+      incoming_flow: "high"
+
+    - name: "Hosur Road South"
+      direction: "south"
+      lanes: 4
+      incoming_flow: "very_high"
+
+    - name: "Outer Ring Road East"
+      direction: "east"
+      lanes: 4
+      incoming_flow: "very_high"
+
+    - name: "Outer Ring Road West"
+      direction: "west"
+      lanes: 4
+      incoming_flow: "high"
+
+    - name: "BTM Layout Road"
+      direction: "northwest"
+      lanes: 2
+      incoming_flow: "medium"
+
+    - name: "Koramangala Road"
+      direction: "northeast"
+      lanes: 2
+      incoming_flow: "medium"
+
+  # Signal phases
+  phases:
+    - id: 0
+      name: "NS_Through"
+      description: "North-South through movement"
+      duration: 60
+      movements: ["north_south", "south_north"]
+
+    - id: 1
+      name: "NS_Yellow"
+      description: "Yellow transition"
+      duration: 3
+
+    - id: 2
+      name: "EW_Through"
+      description: "East-West through movement"
+      duration: 60
+      movements: ["east_west", "west_east"]
+
+    - id: 3
+      name: "EW_Yellow"
+      description: "Yellow transition"
+      duration: 3
+
+    - id: 4
+      name: "Left_Turns"
+      description: "Protected left turns"
+      duration: 30
+      movements: ["all_left"]
+
+    - id: 5
+      name: "Left_Yellow"
+      description: "Yellow transition"
+      duration: 3
+
+# =============================================================================
+# TIN FACTORY JUNCTION
+# =============================================================================
+tin_factory:
+  id: "tin_factory"
+  name: "Tin Factory Junction"
+  description: "Major junction on Old Madras Road"
+
+  latitude: 12.9716
+  longitude: 77.6412
+
+  type: "signalized"
+  geometry: "4-way"
+  elevation: 915
+
+  traffic:
+    peak_delay_minutes: 25
+    aadt: 100000
+    peak_hours:
+      morning: [8, 10]
+      evening: [17, 20]
+
+  approaches:
+    - name: "Old Madras Road West"
+      direction: "west"
+      lanes: 3
+      incoming_flow: "high"
+
+    - name: "Old Madras Road East"
+      direction: "east"
+      lanes: 3
+      incoming_flow: "high"
+
+    - name: "Indiranagar Road"
+      direction: "south"
+      lanes: 3
+      incoming_flow: "medium"
+
+    - name: "CV Raman Nagar Road"
+      direction: "north"
+      lanes: 3
+      incoming_flow: "medium"
+
+  phases:
+    - id: 0
+      name: "EW_Through"
+      duration: 50
+
+    - id: 1
+      name: "EW_Yellow"
+      duration: 3
+
+    - id: 2
+      name: "NS_Through"
+      duration: 40
+
+    - id: 3
+      name: "NS_Yellow"
+      duration: 3
+
+# =============================================================================
+# HEBBAL JUNCTION
+# =============================================================================
+hebbal:
+  id: "hebbal"
+  name: "Hebbal Flyover Junction"
+  description: "Flyover + surface road intersection"
+
+  latitude: 13.0358
+  longitude: 77.5972
+
+  type: "signalized"
+  geometry: "4-way-flyover"
+  elevation: 925
+
+  traffic:
+    peak_delay_minutes: 20
+    aadt: 120000
+    peak_hours:
+      morning: [8, 10]
+      evening: [17, 19]
+
+  approaches:
+    - name: "NH7 Bellary Road North"
+      direction: "north"
+      lanes: 5
+      incoming_flow: "very_high"
+      has_flyover: true
+
+    - name: "NH7 Bellary Road South"
+      direction: "south"
+      lanes: 5
+      incoming_flow: "very_high"
+      has_flyover: true
+
+    - name: "Outer Ring Road East"
+      direction: "east"
+      lanes: 4
+      incoming_flow: "high"
+
+    - name: "Airport Road"
+      direction: "west"
+      lanes: 4
+      incoming_flow: "high"
+
+  phases:
+    - id: 0
+      name: "NH7_Through"
+      duration: 60
+
+    - id: 1
+      name: "NH7_Yellow"
+      duration: 3
+
+    - id: 2
+      name: "ORR_Through"
+      duration: 45
+
+    - id: 3
+      name: "ORR_Yellow"
+      duration: 3
+
+# =============================================================================
+# MARATHAHALLI JUNCTION
+# =============================================================================
+marathahalli:
+  id: "marathahalli"
+  name: "Marathahalli ORR Junction"
+  description: "Major IT corridor junction"
+
+  latitude: 12.9591
+  longitude: 77.7011
+
+  type: "signalized"
+  geometry: "4-way"
+  elevation: 910
+
+  traffic:
+    peak_delay_minutes: 30
+    aadt: 110000
+    peak_hours:
+      morning: [8, 11]
+      evening: [17, 21]
+
+  approaches:
+    - name: "Outer Ring Road North"
+      direction: "north"
+      lanes: 4
+      incoming_flow: "very_high"
+
+    - name: "Outer Ring Road South"
+      direction: "south"
+      lanes: 4
+      incoming_flow: "very_high"
+
+    - name: "Marathahalli Main Road East"
+      direction: "east"
+      lanes: 3
+      incoming_flow: "high"
+
+    - name: "Marathahalli Main Road West"
+      direction: "west"
+      lanes: 3
+      incoming_flow: "high"
+
+  phases:
+    - id: 0
+      name: "ORR_Through"
+      duration: 55
+
+    - id: 1
+      name: "ORR_Yellow"
+      duration: 3
+
+    - id: 2
+      name: "Main_Through"
+      duration: 40
+
+    - id: 3
+      name: "Main_Yellow"
+      duration: 3
+
+# =============================================================================
+# CONNECTIVITY MATRIX
+# =============================================================================
+connectivity:
+  # Which junctions are connected (for MARL coordination)
+  connections:
+    - from: "silk_board"
+      to: "marathahalli"
+      via: "Outer Ring Road"
+      distance_km: 8.5
+      travel_time_peak_min: 35
+
+    - from: "tin_factory"
+      to: "hebbal"
+      via: "Airport Road"
+      distance_km: 10.2
+      travel_time_peak_min: 40
+
+    - from: "silk_board"
+      to: "tin_factory"
+      via: "Hosur Road - ORR"
+      distance_km: 7.0
+      travel_time_peak_min: 30
