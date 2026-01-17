@@ -173,7 +173,7 @@ class PerformanceComparator:
         stat_tests = self.statistical_tests()
         
         # Write report
-        with open(report_file, 'w') as f:
+        with open(report_file, 'w', encoding='utf-8') as f:
             f.write("=" * 90 + "\n")
             f.write("RL AGENT vs FIXED-TIME BASELINE - COMPREHENSIVE COMPARISON\n")
             f.write("=" * 90 + "\n\n")

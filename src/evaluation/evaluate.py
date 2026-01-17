@@ -34,9 +34,14 @@ import gymnasium as gym
 from gymnasium import spaces
 from stable_baselines3 import PPO
 
+# Add parent directory to path for imports
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 # Our modules
-from traffic_env import TrafficEnv
-from arrival_rate_converter import get_hourly_rates
+from src.environment.traffic_env import TrafficEnv
+from src.utils.arrival_rate_converter import get_hourly_rates
 
 
 # ============================================

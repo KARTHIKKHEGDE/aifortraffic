@@ -3,6 +3,12 @@ PPO Training Pipeline for Adaptive Traffic Signal Control
 ==========================================================
 Research-grade training system with advanced RL techniques.
 
+✨ ENHANCED VERSION - Optimized for Better Performance ✨
+- 3M timesteps (3x longer training)
+- 6-stage curriculum (smoother progression)
+- Reduced learning rate (1e-4 for stability)
+- Lower entropy coefficient (0.005 for less exploration)
+
 Features:
 ✓ Curriculum learning (easy → hard traffic scenarios)
 ✓ Advanced PPO hyperparameters (tuned for traffic control)
@@ -25,7 +31,7 @@ Based on:
 - Traffic control literature (Webster, SCOOT, SCATS)
 
 Author: Traffic Signal RL System
-Version: 3.0 - Production Grade
+Version: 4.0 - Enhanced Production Grade
 """
 
 import os
@@ -59,8 +65,13 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
+# Add parent directory to path for imports
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 # Our modules
-from traffic_env import TrafficEnv, TrafficPatternGenerator
+from src.environment.traffic_env import TrafficEnv, TrafficPatternGenerator
 
 
 # ============================================
@@ -119,7 +130,7 @@ class TrafficGymEnv(gym.Env):
     Production-grade Gymnasium wrapper with advanced features.
     
     Enhancements:
-    - Curriculum learning support
+    - 6-stage curriculum learning support
     - Episode statistics tracking
     - Reward scaling (improves PPO training)
     - Action masking (optional, for safety)
@@ -166,40 +177,64 @@ class TrafficGymEnv(gym.Env):
     
     def _get_curriculum_pattern(self) -> Dict[str, float]:
         """
-        Generate traffic pattern based on curriculum stage.
+        Generate traffic pattern based on curriculum stage (6 stages).
         
-        Stage 1 (Easy): Balanced, low-medium traffic
-        Stage 2 (Medium): Asymmetric, medium traffic
-        Stage 3 (Hard): Rush hour, high traffic
-        Stage 4 (Expert): Mixed scenarios with gridlock
+        Stage 1 (Very Easy): Balanced, low traffic only
+        Stage 2 (Easy): Balanced + slight asymmetry, low-medium traffic
+        Stage 3 (Medium): Introduce rush hour patterns
+        Stage 4 (Hard): Full rush hour scenarios
+        Stage 5 (Very Hard): Mixed complex scenarios
+        Stage 6 (Expert): All patterns including gridlock
         """
         if self.curriculum_stage == 1:
-            # Easy: Balanced, low traffic
+            # Very Easy: Only balanced, low traffic
             patterns = [
+                TrafficPatternGenerator.low_traffic,
                 TrafficPatternGenerator.low_traffic,
                 TrafficPatternGenerator.balanced_flow,
             ]
             return np.random.choice(patterns)()
         
         elif self.curriculum_stage == 2:
-            # Medium: Introduce asymmetry
+            # Easy: Introduce slight asymmetry
             patterns = [
                 TrafficPatternGenerator.balanced_flow,
+                TrafficPatternGenerator.balanced_flow,
                 TrafficPatternGenerator.uniform_random,
-                lambda: TrafficPatternGenerator.rush_hour('NS'),
             ]
             return np.random.choice(patterns)()
         
         elif self.curriculum_stage == 3:
-            # Hard: Rush hour scenarios
+            # Medium: Add rush hour patterns
+            patterns = [
+                TrafficPatternGenerator.balanced_flow,
+                TrafficPatternGenerator.uniform_random,
+                lambda: TrafficPatternGenerator.rush_hour('NS'),
+                lambda: TrafficPatternGenerator.rush_hour('EW'),
+            ]
+            return np.random.choice(patterns)()
+        
+        elif self.curriculum_stage == 4:
+            # Hard: Primarily rush hour scenarios
+            patterns = [
+                lambda: TrafficPatternGenerator.rush_hour(),
+                lambda: TrafficPatternGenerator.rush_hour('NS'),
+                lambda: TrafficPatternGenerator.rush_hour('EW'),
+                TrafficPatternGenerator.directional_peak,
+            ]
+            return np.random.choice(patterns)()
+        
+        elif self.curriculum_stage == 5:
+            # Very Hard: Mixed complex scenarios
             patterns = [
                 lambda: TrafficPatternGenerator.rush_hour(),
                 TrafficPatternGenerator.directional_peak,
                 TrafficPatternGenerator.uniform_random,
+                TrafficPatternGenerator.balanced_flow,
             ]
             return np.random.choice(patterns)()
         
-        else:  # Stage 4+
+        else:  # Stage 6 (Expert)
             # Expert: Everything including gridlock
             return TrafficPatternGenerator.get_random_pattern()
     
@@ -304,16 +339,18 @@ class CurriculumCallback(BaseCallback):
     """
     Implements curriculum learning: progressively harder scenarios.
     
-    Stage progression:
-    - Stage 1: 0-100k steps (easy)
-    - Stage 2: 100k-250k steps (medium)
-    - Stage 3: 250k-500k steps (hard)
-    - Stage 4: 500k+ steps (expert)
+    Enhanced stage progression with 6 stages:
+    - Stage 1: 0-150k steps (very easy - balanced, low traffic)
+    - Stage 2: 150k-400k steps (easy - introduce asymmetry)
+    - Stage 3: 400k-800k steps (medium - varied patterns)
+    - Stage 4: 800k-1.5M steps (hard - rush hours)
+    - Stage 5: 1.5M-2.2M steps (very hard - mixed scenarios)
+    - Stage 6: 2.2M+ steps (expert - all patterns including gridlock)
     """
     
     def __init__(self, verbose: int = 0):
         super().__init__(verbose)
-        self.stage_thresholds = [0, 100_000, 250_000, 500_000]
+        self.stage_thresholds = [0, 150_000, 400_000, 800_000, 1_500_000, 2_200_000]
         self.current_stage = 1
     
     def _on_step(self) -> bool:
@@ -329,7 +366,8 @@ class CurriculumCallback(BaseCallback):
         if new_stage != self.current_stage:
             self.current_stage = new_stage
             print(f"\n{'='*60}")
-            print(f"📚 CURRICULUM ADVANCED TO STAGE {self.current_stage}")
+            print(f"📚 CURRICULUM ADVANCED TO STAGE {self.current_stage}/6")
+            print(f"   Total steps: {total_steps:,}")
             print(f"{'='*60}\n")
             
             # Update all training environments
@@ -356,6 +394,10 @@ class GradientMonitorCallback(BaseCallback):
     
     def __init__(self, verbose: int = 0):
         super().__init__(verbose)
+    
+    def _on_step(self) -> bool:
+        """Required by BaseCallback - called after each step."""
+        return True
     
     def _on_rollout_end(self) -> None:
         """Log gradient statistics after PPO update."""
@@ -423,12 +465,18 @@ def make_env(
 
 
 # ============================================
-# TRAINING CONFIGURATION
+# ENHANCED TRAINING CONFIGURATION
 # ============================================
 
 class OptimizedTrainingConfig:
     """
-    Research-grade hyperparameters for traffic signal control.
+    Enhanced hyperparameters for traffic signal control.
+    
+    IMPROVEMENTS:
+    - 3M timesteps (3x longer training for better convergence)
+    - 6-stage curriculum (smoother difficulty progression)
+    - Reduced learning rate 1e-4 (more stable learning)
+    - Lower entropy 0.005 (less exploration, more exploitation)
     
     Tuned based on:
     - PPO ablation studies (Engstrom et al., 2020)
@@ -441,8 +489,8 @@ class OptimizedTrainingConfig:
     N_ENVS = 8                          # Parallel environments (CPU-dependent)
     ENV_SEED = 42                       # Reproducibility
     
-    # ========== PPO CORE ==========
-    LEARNING_RATE = 3e-4                # Standard for PPO
+    # ========== PPO CORE (ENHANCED) ==========
+    LEARNING_RATE = 1e-4                # Reduced from 3e-4 for more stable learning
     LR_SCHEDULE = "linear"              # Decay to improve late-stage training
     
     N_STEPS = 2048                      # Steps per rollout (per env)
@@ -455,9 +503,9 @@ class OptimizedTrainingConfig:
     CLIP_RANGE = 0.2                    # PPO clipping (trust region)
     CLIP_RANGE_VF = None                # Value function clipping (optional)
     
-    # ========== EXPLORATION ==========
-    ENT_COEF = 0.01                     # Entropy bonus (initial)
-    ENT_COEF_FINAL = 0.001              # Entropy decay (less exploration later)
+    # ========== EXPLORATION (REDUCED) ==========
+    ENT_COEF = 0.005                    # Reduced from 0.01 for less exploration
+    ENT_COEF_FINAL = 0.0005             # Entropy decay (less exploration later)
     
     # ========== STABILITY ==========
     VF_COEF = 0.5                       # Value function loss weight
@@ -471,8 +519,8 @@ class OptimizedTrainingConfig:
         "features_extractor_kwargs": {"features_dim": 64},
     }
     
-    # ========== TRAINING DURATION ==========
-    TOTAL_TIMESTEPS = 1_000_000         # 1M steps (adjust based on compute)
+    # ========== TRAINING DURATION (EXTENDED) ==========
+    TOTAL_TIMESTEPS = 3_000_000         # 3M steps (increased for better convergence)
     
     # ========== EVALUATION ==========
     EVAL_FREQ = 20_000                  # Evaluate every N steps
@@ -481,11 +529,11 @@ class OptimizedTrainingConfig:
     # ========== CHECKPOINTING ==========
     SAVE_FREQ = 50_000                  # Save checkpoint every N steps
     
-    # ========== CURRICULUM ==========
-    USE_CURRICULUM = True               # Enable curriculum learning
+    # ========== CURRICULUM (6 STAGES) ==========
+    USE_CURRICULUM = True               # Enable enhanced curriculum learning
     
     # ========== OUTPUT ==========
-    MODEL_NAME = "ppo_traffic_signal_v3"
+    MODEL_NAME = "ppo_traffic_signal_v4_enhanced"
     USE_TENSORBOARD = True
 
 
@@ -610,17 +658,19 @@ def train(config: OptimizedTrainingConfig = None):
     os.makedirs(f"models/{run_name}", exist_ok=True)
     
     print("=" * 80)
-    print("🚦 ADVANCED PPO TRAINING FOR TRAFFIC SIGNAL CONTROL")
+    print("🚦 ENHANCED PPO TRAINING FOR TRAFFIC SIGNAL CONTROL")
     print("=" * 80)
+    print(f"🎯 Version 4.0 - Optimized for Better Performance")
     print(f"Run: {run_name}")
     print(f"Device: {'CUDA' if torch.cuda.is_available() else 'CPU'}")
     print(f"\n📋 Configuration:")
-    print(f"   Total timesteps: {config.TOTAL_TIMESTEPS:,}")
+    print(f"   Total timesteps: {config.TOTAL_TIMESTEPS:,} (3M - EXTENDED)")
     print(f"   Parallel envs: {config.N_ENVS}")
     print(f"   Steps per rollout: {config.N_STEPS}")
     print(f"   Batch size: {config.BATCH_SIZE}")
-    print(f"   Learning rate: {config.LEARNING_RATE}")
-    print(f"   Curriculum learning: {'Enabled' if config.USE_CURRICULUM else 'Disabled'}")
+    print(f"   Learning rate: {config.LEARNING_RATE} (REDUCED for stability)")
+    print(f"   Entropy coef: {config.ENT_COEF} (REDUCED for less exploration)")
+    print(f"   Curriculum: {'6 stages' if config.USE_CURRICULUM else 'Disabled'} (ENHANCED)")
     print(f"   Network: Custom 3-layer [128-128-64] with LayerNorm")
     print("=" * 80)
     
@@ -635,11 +685,11 @@ def train(config: OptimizedTrainingConfig = None):
     
     # Evaluation environment (single, separate from training)
     eval_env = DummyVecEnv([
-        make_env(0, config.MAX_STEPS_PER_EPISODE, curriculum_stage=4, seed=999)
+        make_env(0, config.MAX_STEPS_PER_EPISODE, curriculum_stage=6, seed=999)
     ])
     
     print(f"   ✓ Created {config.N_ENVS} training environments")
-    print(f"   ✓ Created 1 evaluation environment")
+    print(f"   ✓ Created 1 evaluation environment (Stage 6 - Expert)")
     print(f"   Observation space: {train_envs.observation_space}")
     print(f"   Action space: {train_envs.action_space}")
     
@@ -731,11 +781,20 @@ def train(config: OptimizedTrainingConfig = None):
     print(f"     - Checkpointing (every {config.SAVE_FREQ:,} steps)")
     print(f"     - Traffic metrics logging")
     if config.USE_CURRICULUM:
-        print(f"     - Curriculum learning")
+        print(f"     - Curriculum learning (6 stages)")
+        print(f"       • Stage 1: 0-150k (very easy)")
+        print(f"       • Stage 2: 150k-400k (easy)")
+        print(f"       • Stage 3: 400k-800k (medium)")
+        print(f"       • Stage 4: 800k-1.5M (hard)")
+        print(f"       • Stage 5: 1.5M-2.2M (very hard)")
+        print(f"       • Stage 6: 2.2M+ (expert)")
     print(f"     - Gradient monitoring")
     
     # ========== TRAIN ==========
-    print("\n🚀 Starting training...")
+    print("\n🚀 Starting enhanced training...")
+    print("   🎯 Training for 3M timesteps (3x longer than baseline)")
+    print("   📉 Using reduced learning rate (1e-4) for stability")
+    print("   🎲 Using reduced entropy (0.005) for better exploitation")
     print("   Press Ctrl+C to stop (model will be saved)")
     print("   Monitor with: tensorboard --logdir logs")
     print("-" * 80)
@@ -765,20 +824,31 @@ def train(config: OptimizedTrainingConfig = None):
     
     # ========== SUMMARY ==========
     print("\n" + "=" * 80)
-    print("✅ TRAINING COMPLETE!")
+    print("✅ ENHANCED TRAINING COMPLETE!")
     print("=" * 80)
-    print(f"\nSaved models:")
-    print(f"  Best: models/{run_name}/best_model.zip")
-    print(f"  Final: models/{run_name}/final_model.zip")
-    print(f"  Checkpoints: models/{run_name}/checkpoints/")
-    print(f"\nLogs:")
-    print(f"  TensorBoard: logs/{run_name}/")
-    print(f"  Evaluation: logs/{run_name}_eval/")
-    print(f"\nNext steps:")
-    print(f"  1. Visualize: tensorboard --logdir logs/{run_name}")
-    print(f"  2. Evaluate: python evaluate.py --model models/{run_name}/best_model.zip")
-    print(f"  3. Compare with fixed-time baseline")
-    print(f"  4. Test on Silk Board real data")
+    print(f"\n🎯 Training Summary:")
+    print(f"   Version: 4.0 (Enhanced)")
+    print(f"   Total timesteps: {config.TOTAL_TIMESTEPS:,}")
+    print(f"   Learning rate: {config.LEARNING_RATE} (reduced)")
+    print(f"   Entropy coef: {config.ENT_COEF} (reduced)")
+    print(f"   Curriculum stages: 6 (enhanced)")
+    print(f"\n💾 Saved models:")
+    print(f"   Best: models/{run_name}/best_model.zip")
+    print(f"   Final: models/{run_name}/final_model.zip")
+    print(f"   Checkpoints: models/{run_name}/checkpoints/")
+    print(f"\n📊 Logs:")
+    print(f"   TensorBoard: logs/{run_name}/")
+    print(f"   Evaluation: logs/{run_name}_eval/")
+    print(f"\n🚀 Next steps:")
+    print(f"   1. Visualize: tensorboard --logdir logs/{run_name}")
+    print(f"   2. Evaluate: python evaluate.py --model models/{run_name}/best_model.zip")
+    print(f"   3. Compare with baseline (-2832.88 ± 712.69)")
+    print(f"   4. Test on Silk Board real data")
+    print(f"\n💡 Expected improvements:")
+    print(f"   - More stable learning (lower LR)")
+    print(f"   - Better final performance (3x training time)")
+    print(f"   - Smoother learning curve (6-stage curriculum)")
+    print(f"   - More consistent policy (reduced exploration)")
     print("=" * 80)
     
     return model, run_name
@@ -834,14 +904,14 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(
-        description="Train PPO agent for adaptive traffic signal control",
+        description="Train enhanced PPO agent for adaptive traffic signal control (v4.0)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
         "--timesteps", 
         type=int, 
-        default=1_000_000,
-        help="Total training timesteps"
+        default=3_000_000,
+        help="Total training timesteps (default: 3M for enhanced version)"
     )
     parser.add_argument(
         "--envs", 
@@ -865,6 +935,18 @@ if __name__ == "__main__":
         default=42,
         help="Random seed for reproducibility"
     )
+    parser.add_argument(
+        "--lr",
+        type=float,
+        default=1e-4,
+        help="Learning rate (default: 1e-4 for enhanced version)"
+    )
+    parser.add_argument(
+        "--ent-coef",
+        type=float,
+        default=0.005,
+        help="Entropy coefficient (default: 0.005 for enhanced version)"
+    )
     
     args = parser.parse_args()
     
@@ -878,16 +960,31 @@ if __name__ == "__main__":
         config.N_ENVS = args.envs
         config.USE_CURRICULUM = not args.no_curriculum
         config.ENV_SEED = args.seed
+        config.LEARNING_RATE = args.lr
+        config.ENT_COEF = args.ent_coef
         
-        print(f"\n🎯 Training Configuration:")
-        print(f"   Timesteps: {config.TOTAL_TIMESTEPS:,}")
+        print(f"\n{'='*80}")
+        print(f"🎯 ENHANCED TRAINING CONFIGURATION (v4.0)")
+        print(f"{'='*80}")
+        print(f"   Timesteps: {config.TOTAL_TIMESTEPS:,} (3x baseline)")
         print(f"   Environments: {config.N_ENVS}")
-        print(f"   Curriculum: {'ON' if config.USE_CURRICULUM else 'OFF'}")
+        print(f"   Learning rate: {config.LEARNING_RATE} (reduced for stability)")
+        print(f"   Entropy coef: {config.ENT_COEF} (reduced for exploitation)")
+        print(f"   Curriculum: {'6 stages' if config.USE_CURRICULUM else 'OFF'}")
         print(f"   Seed: {config.ENV_SEED}")
-        print()
+        print(f"\n📊 Expected training time:")
+        print(f"   ~3-4 hours on 8-core CPU")
+        print(f"   ~1-2 hours on GPU")
+        print(f"\n🎯 Target performance:")
+        print(f"   Current baseline: -2832.88 ± 712.69")
+        print(f"   Expected improvement: 20-30% better")
+        print(f"   Target: -2000 to -2200 range")
+        print(f"{'='*80}\n")
         
         # Train
         model, run_name = train(config)
         
-        print(f"\n🎉 Training completed successfully!")
+        print(f"\n🎉 Enhanced training completed successfully!")
         print(f"Run name: {run_name}")
+        print(f"\nCompare results with baseline using:")
+        print(f"  python evaluate.py --model models/{run_name}/best_model.zip")
