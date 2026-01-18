@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <vType id="car" accel="2.5" decel="4.5" sigma="0.5" length="4.5" maxSpeed="13.89"/>
+    <vType id="emergency" accel="3.0" decel="5.0" length="5.0" maxSpeed="16.67" vClass="emergency" color="1,0,0"/>
+
+    <vehicle id="car_0" type="car" depart="0">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_1" type="car" depart="10">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_2" type="car" depart="20">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_3" type="car" depart="30">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_4" type="car" depart="40">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_5" type="car" depart="50">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_6" type="car" depart="60">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_7" type="car" depart="70">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_8" type="car" depart="80">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_9" type="car" depart="90">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_10" type="car" depart="100">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_11" type="car" depart="110">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_12" type="car" depart="120">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_13" type="car" depart="130">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_14" type="car" depart="140">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_15" type="car" depart="150">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_16" type="car" depart="160">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_17" type="car" depart="170">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_18" type="car" depart="180">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="car_19" type="car" depart="190">
+        <route edges="A0toA1 A1toA2"/>
+    </vehicle>
+    <vehicle id="emergency_0" type="emergency" depart="120">
+        <route edges="A0toA1 A1toB1"/>
+    </vehicle>
+    <vehicle id="emergency_1" type="emergency" depart="240">
+        <route edges="A0toA1 A1toB1"/>
+    </vehicle>
+    <vehicle id="emergency_2" type="emergency" depart="360">
+        <route edges="A0toA1 A1toB1"/>
+    </vehicle>
+    <vehicle id="emergency_3" type="emergency" depart="480">
+        <route edges="A0toA1 A1toB1"/>
+    </vehicle>
+    <vehicle id="emergency_4" type="emergency" depart="600">
+        <route edges="A0toA1 A1toB1"/>
+    </vehicle>
+</routes>

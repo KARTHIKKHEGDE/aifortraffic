@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <!-- Vehicle types -->
+    <vType id="car" accel="2.5" decel="4.5" sigma="0.5" length="4.5" maxSpeed="13.89" color="0.2,0.5,0.8"/>
+    <vType id="truck" accel="1.5" decel="3.0" sigma="0.5" length="8.0" maxSpeed="11.11" color="0.5,0.5,0.5"/>
+    <vType id="emergency" accel="3.0" decel="5.0" sigma="0.3" length="5.0" maxSpeed="16.67" vClass="emergency" color="1,0,0" guiShape="emergency"/>
+    
+    <!-- Routes -->
+    <route id="north_south" edges="north_in south_out"/>
+    <route id="north_east" edges="north_in east_out"/>
+    <route id="north_west" edges="north_in west_out"/>
+    
+    <route id="south_north" edges="south_in north_out"/>
+    <route id="south_east" edges="south_in east_out"/>
+    <route id="south_west" edges="south_in west_out"/>
+    
+    <route id="east_west" edges="east_in west_out"/>
+    <route id="east_north" edges="east_in north_out"/>
+    <route id="east_south" edges="east_in south_out"/>
+    
+    <route id="west_east" edges="west_in east_out"/>
+    <route id="west_north" edges="west_in north_out"/>
+    <route id="west_south" edges="west_in south_out"/>
+    
+    <!-- Traffic flows -->
+    <flow id="flow_ns" type="car" route="north_south" begin="0" end="900" probability="0.15"/>
+    <flow id="flow_ne" type="car" route="north_east" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_nw" type="car" route="north_west" begin="0" end="900" probability="0.05"/>
+    
+    <flow id="flow_sn" type="car" route="south_north" begin="0" end="900" probability="0.15"/>
+    <flow id="flow_se" type="car" route="south_east" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_sw" type="car" route="south_west" begin="0" end="900" probability="0.05"/>
+    
+    <flow id="flow_ew" type="car" route="east_west" begin="0" end="900" probability="0.15"/>
+    <flow id="flow_en" type="car" route="east_north" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_es" type="car" route="east_south" begin="0" end="900" probability="0.05"/>
+    
+    <flow id="flow_we" type="car" route="west_east" begin="0" end="900" probability="0.15"/>
+    <flow id="flow_wn" type="car" route="west_north" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_ws" type="car" route="west_south" begin="0" end="900" probability="0.05"/>
+    
+    <!-- Emergency vehicles (spawn every 2 minutes) -->
+    <vehicle id="emergency_0" type="emergency" route="north_south" depart="120"/>
+    <vehicle id="emergency_1" type="emergency" route="east_west" depart="240"/>
+    <vehicle id="emergency_2" type="emergency" route="south_north" depart="360"/>
+    <vehicle id="emergency_3" type="emergency" route="west_east" depart="480"/>
+    <vehicle id="emergency_4" type="emergency" route="north_south" depart="600"/>
+    <vehicle id="emergency_5" type="emergency" route="east_west" depart="720"/>
+    <vehicle id="emergency_6" type="emergency" route="south_north" depart="840"/>
+</routes>
