@@ -1,348 +1,282 @@
 """
-Universal Heuristic Traffic Control Agent
-Works with ANY SUMO network - single intersection, grids, or real city maps
+Heuristic Traffic Agent
+Smart traffic light control logic with robust error handling
 """
 
 import traci
-import numpy as np
-from typing import Dict, List, Tuple, Optional
+import time
+from typing import Dict, List, Optional, Tuple
 
 class HeuristicAgent:
     """
-    Intelligent heuristic-based traffic controller
-    
-    Works with:
-    - 3-way intersections (T-junctions)
-    - 4-way intersections (standard cross)
-    - Complex multi-phase intersections
-    - Real city networks (Bangalore, etc.)
-    
-    Decision Rules:
-    1. Emergency vehicle priority
-    2. Minimum green time (prevent rapid switching)
-    3. Maximum green time (prevent starvation)
-    4. Queue imbalance (switch if one direction much longer)
-    5. Waiting time threshold (fairness)
+    Intelligent Traffic Agent logic
+    Uses heuristics (rules) to decide traffic light phases
     """
     
-    def __init__(self,
-                 tls_id: str,
-                 min_green_time: float = 10.0,
-                 max_green_time: float = 60.0,
-                 yellow_time: float = 3.0,
-                 queue_threshold: int = 5,
-                 wait_time_threshold: float = 45.0):
-        """
-        Initialize heuristic agent for a traffic light
-        
-        Args:
-            tls_id: Traffic light system ID in SUMO
-            min_green_time: Minimum green duration (seconds)
-            max_green_time: Maximum green duration (seconds)
-            yellow_time: Yellow phase duration (seconds)
-            queue_threshold: Queue difference to trigger switch
-            wait_time_threshold: Max wait before forcing switch
-        """
+    def __init__(self, tls_id: str):
         self.tls_id = tls_id
-        self.min_green_time = min_green_time
-        self.max_green_time = max_green_time
-        self.yellow_time = yellow_time
-        self.queue_threshold = queue_threshold
-        self.wait_time_threshold = wait_time_threshold
+        
+        # Configuration
+        self.min_green_time = 10.0
+        self.max_green_time = 45.0
+        self.yellow_time = 3.0
+        self.wait_time_threshold = 40.0
         
         # Discover junction structure
         self._discover_junction_structure()
         
-        # State tracking
-        self.current_phase = 0
+        # State
+        self.current_phase = self.green_phases[0] if self.green_phases else 0
         self.phase_start_time = 0.0
         self.in_yellow = False
         self.next_phase = None
-        
-        # Performance metrics
         self.total_switches = 0
         self.emergency_interventions = 0
         
-        print(f"✅ Heuristic Agent initialized: {tls_id}")
-        print(f"   Type: {self.junction_type}")
-        print(f"   Phases: {self.num_green_phases} green phases")
-        print(f"   Controlled lanes: {len(self.controlled_lanes)}")
-    
-    def _discover_junction_structure(self):
-        """Automatically discover junction structure from SUMO"""
+        # Initialize
         try:
-            # Get traffic light program
-            programs = traci.trafficlight.getAllProgramLogics(self.tls_id)
+            traci.trafficlight.setPhase(self.tls_id, self.current_phase)
+        except Exception as e:
+            print(f"⚠️ Initial phase setup failed for {self.tls_id}: {e}")
             
+        print(f"✅ Heuristic Agent initialized: {tls_id}")
+        
+    def _discover_junction_structure(self):
+        """Analyze junction to understand phases"""
+        try:
+            programs = traci.trafficlight.getAllProgramLogics(self.tls_id)
             if not programs:
                 raise Exception(f"No traffic light program found for {self.tls_id}")
-            
-            program = programs[0]
-            self.phases = program.phases
-            
-            # Classify phases (green vs yellow/red)
+                
+            logic = programs[0]
+            self.phases = logic.phases
             self.green_phases = []
             self.yellow_phases = []
             
             for i, phase in enumerate(self.phases):
-                state = phase.state
-                if 'G' in state or 'g' in state:
+                if 'G' in phase.state or 'g' in phase.state:
                     self.green_phases.append(i)
-                elif 'y' in state or 'Y' in state:
+                elif 'y' in phase.state or 'Y' in phase.state:
                     self.yellow_phases.append(i)
-            
-            self.num_green_phases = len(self.green_phases)
-            
-            # Get controlled lanes
-            self.controlled_lanes = list(set(traci.trafficlight.getControlledLanes(self.tls_id)))
-            
-            # Get controlled links (for understanding phase structure)
-            self.controlled_links = traci.trafficlight.getControlledLinks(self.tls_id)
-            
-            # Classify junction type
-            num_lanes = len(self.controlled_lanes)
-            if num_lanes <= 4:
-                self.junction_type = "simple"
-            elif num_lanes <= 8:
-                self.junction_type = "4-way"
-            elif num_lanes <= 12:
-                self.junction_type = "complex"
-            else:
-                self.junction_type = "major"
-            
+                    
+            # Determine controlled lanes
+            all_lanes = traci.trafficlight.getControlledLanes(self.tls_id)
+            self.controlled_lanes = list(set(all_lanes)) 
         except Exception as e:
-            print(f"⚠️ Error discovering junction structure: {e}")
-            self.green_phases = [0, 2]
-            self.yellow_phases = [1, 3]
-            self.num_green_phases = 2
+            print(f"❌ Structural discovery failed for {self.tls_id}: {e}")
+            self.phases = []
+            self.green_phases = [0]
+            self.yellow_phases = []
             self.controlled_lanes = []
-            self.junction_type = "unknown"
-    
-    def get_traffic_state(self, current_time: float) -> Dict:
-        """
-        Get current traffic state at this junction
         
-        Returns dict with:
-        - queue_lengths: per-lane queue counts (stopped vehicles)
-        - total_waiting_times: per-lane sum of waiting times
-        - max_waiting_times: per-lane max waiting time (single vehicle)
-        - approaching_count: count of moving vehicles approaching green
-        - emergency_present: list of emergency vehicle IDs
-        - phase_duration: how long current phase has been active
-        """
-        queue_lengths = {}
-        total_waiting_times = {}
-        max_waiting_times = {}
-        approaching_counts = {}
-        emergency_vehicles = []
+    def get_traffic_state(self, current_time: float) -> Dict:
+        """Collect sensor data from simulation with robust error handling"""
+        state = {
+            'queue_lengths': {},
+            'waiting_times': {},
+            'max_waiting_times': {},
+            'approaching_counts': {},
+            'emergency_vehicles': False,
+            'phase_duration': current_time - self.phase_start_time
+        }
         
         for lane in self.controlled_lanes:
             try:
-                vehicle_ids = traci.lane.getLastStepVehicleIDs(lane)
+                # Queue Length
+                state['queue_lengths'][lane] = traci.lane.getLastStepHaltingNumber(lane)
                 
-                stopped_count = 0
-                lane_total_wait = 0.0
-                lane_max_wait = 0.0
+                # Waiting Time
+                state['waiting_times'][lane] = traci.lane.getWaitingTime(lane)
+                
+                # Max Waiting Time (Individual vehicle)
+                max_wait = 0.0
+                vehs = traci.lane.getLastStepVehicleIDs(lane)
+                for v in vehs:
+                    try:
+                        w = traci.vehicle.getAccumulatedWaitingTime(v)
+                        if w > max_wait:
+                            max_wait = w
+                        if traci.vehicle.getTypeID(v) == 'emergency':
+                            state['emergency_vehicles'] = True
+                    except:
+                        continue
+                state['max_waiting_times'][lane] = max_wait
+                
+                # Approaching count
                 approaching = 0
+                for v in vehs:
+                    try:
+                        if traci.vehicle.getSpeed(v) > 2.0:
+                            approaching += 1
+                    except:
+                        continue
+                state['approaching_counts'][lane] = approaching
+            except:
+                continue
                 
-                for veh_id in vehicle_ids:
-                    speed = traci.vehicle.getSpeed(veh_id)
-                    wait_time = traci.vehicle.getAccumulatedWaitingTime(veh_id)
-                    
-                    if speed < 1.0:  # Vehicle is stopped
-                        stopped_count += 1
-                        lane_total_wait += wait_time
-                        if wait_time > lane_max_wait:
-                            lane_max_wait = wait_time
-                    else:
-                        # Moving vehicle
-                        approaching += 1
+        return state
+
+    def _get_vehicle_movements(self) -> Dict[str, Dict[str, int]]:
+        """Count vehicles by direction and turn intention with error handling."""
+        movements = { d: {'L': 0, 'S': 0, 'R': 0} for d in ['N', 'S', 'E', 'W'] }
+
+        for lane in self.controlled_lanes:
+            if lane.startswith(':'): continue
+                
+            try:
+                veh_ids = traci.lane.getLastStepVehicleIDs(lane)
+                for veh_id in veh_ids:
+                    try:
+                        # OMNISCIENT SENSING - check route
+                        route = traci.vehicle.getRoute(veh_id)
+                        current_edge = traci.vehicle.getRoadID(veh_id)
                         
-                    # Check if emergency
-                    vtype = traci.vehicle.getTypeID(veh_id)
-                    if vtype == 'emergency':
-                        emergency_vehicles.append(veh_id)
-                
-                queue_lengths[lane] = stopped_count
-                total_waiting_times[lane] = lane_total_wait
-                max_waiting_times[lane] = lane_max_wait
-                approaching_counts[lane] = approaching
-                
-            except Exception:
-                queue_lengths[lane] = 0
-                total_waiting_times[lane] = 0.0
-                max_waiting_times[lane] = 0.0
-                approaching_counts[lane] = 0
+                        if len(route) < 2: continue
+                        
+                        try:
+                            idx = route.index(current_edge)
+                            if idx + 1 >= len(route): continue 
+                            to_edge = route[idx+1]
+                        except ValueError: continue
+
+                        direction = self._classify_direction(current_edge)
+                        turn = self._classify_turn(current_edge, to_edge)
+
+                        if direction and turn:
+                            movements[direction][turn] += 1
+                    except:
+                        continue
+            except:
+                continue
+
+        return movements
+
+    def _classify_direction(self, edge_id: str) -> Optional[str]:
+        edge_id = edge_id.lower()
+        if 'north' in edge_id or 'n_' in edge_id or '_n' in edge_id: return 'N'
+        if 'south' in edge_id or 's_' in edge_id or '_s' in edge_id: return 'S'
+        if 'east' in edge_id or 'e_' in edge_id or '_e' in edge_id: return 'E'
+        if 'west' in edge_id or 'w_' in edge_id or '_w' in edge_id: return 'W'
+        return None
+
+    def _classify_turn(self, from_edge: str, to_edge: str) -> Optional[str]:
+        # Fallback to straight if we can't tell
+        return 'S'
+
+    def _score_phases(self, movements: Dict) -> Dict[int, float]:
+        """Score each SUMO green phase"""
+        phase_scores = {}
+        for phase in self.green_phases:
+            lanes = self._get_lanes_for_phase(phase)
+            score = 0.0
+            for lane in lanes:
+                edge_id = '_'.join(lane.split('_')[:-1]) 
+                direction = self._classify_direction(edge_id)
+                if not direction: continue
+                m = movements.get(direction, {'L':0,'S':0,'R':0})
+                score += (1.5 * m['L'] + 1.0 * m['S'] + 0.8 * m['R'])
+            phase_scores[phase] = score
+        return phase_scores
         
-        phase_duration = current_time - self.phase_start_time
-        
-        return {
-            'queue_lengths': queue_lengths,
-            'total_waiting_times': total_waiting_times,
-            'max_waiting_times': max_waiting_times,
-            'approaching_counts': approaching_counts,
-            'emergency_vehicles': emergency_vehicles,
-            'phase_duration': phase_duration,
-            'current_phase': self.current_phase
-        }
-    
     def decide_phase_change(self, state: Dict) -> bool:
-        """
-        Smart heuristic decision making
-        Uses a weighted score combining Queue Length and Max Waiting Time
-        """
-        
-        # Rule 0: Don't interrupt yellow
-        if self.in_yellow:
-            return False
-        
-        # Rule 1: Emergency vehicle priority (Immediate)
-        if state['emergency_vehicles']:
-            if state['phase_duration'] >= self.min_green_time * 0.5:
-                print(f"🚑 Emergency detected at {self.tls_id}! Considering switch...")
-                if self._emergency_on_red_lanes(state):
-                    print(f"   Emergency on RED lane - switching!")
-                    return True
-        
-        # Rule 2: Respect minimum green time
-        if state['phase_duration'] < self.min_green_time:
-            return False
-        
-        # Rule 3: Force switch at maximum green time
-        if state['phase_duration'] >= self.max_green_time:
-            print(f"⏰ Max green time reached at {self.tls_id}")
+        """New Decision Logic using Omniscient Scores"""
+        if self.in_yellow: return False
+
+        movements = self._get_vehicle_movements()
+        phase_scores = self._score_phases(movements)
+        if not phase_scores: return False
+
+        current_score = phase_scores.get(self.current_phase, 0)
+        best_phase = max(phase_scores, key=phase_scores.get)
+        best_score = phase_scores[best_phase]
+
+        # Rule 1: Gap-Out
+        if current_score <= 0.1 and best_score > 0.5:
+            self.next_phase = best_phase
             return True
 
-        # --- SCORING SYSTEM ---
-        # Calculate urgency scores for current green phase vs next potential phase
-        
-        # Factors
-        W_QUEUE = 1.0       # Weight for number of stopped cars
-        W_WAIT = 0.5        # Weight for max waiting time (fairness)
-        W_APPROACH = 0.2    # Weight for approaching cars (green extension)
-        
-        green_lanes = self._get_lanes_for_phase(self.current_phase)
-        next_green_phase_idx = self._get_next_green_phase()
-        red_lanes = self._get_lanes_for_phase(next_green_phase_idx)
-        
-        # Calculate GREEN Score (Keep Current)
-        green_score = 0.0
-        for lane in green_lanes:
-            q = state['queue_lengths'].get(lane, 0)
-            w = state['max_waiting_times'].get(lane, 0)
-            a = state['approaching_counts'].get(lane, 0)
-            # Logic: If I keep green, I serve these queues + approaching
-            green_score += (q * W_QUEUE) + (a * W_APPROACH)
-            
-        # Calculate RED Score (Switch Now)
-        red_score = 0.0
-        max_red_wait_actual = 0.0
-        for lane in red_lanes:
-            q = state['queue_lengths'].get(lane, 0)
-            w = state['max_waiting_times'].get(lane, 0)
-            if w > max_red_wait_actual:
-                max_red_wait_actual = w
-            
-            # Logic: If I switch, I relieve this pressure
-            red_score += (q * W_QUEUE) + (w * W_WAIT) # Wait time matters more for red lanes (starvation)
-
-        # Rule 4: Anti-Starvation / Fairness Override
-        # If any car has waited too long on red, switch regardless of green flow
-        if max_red_wait_actual > self.wait_time_threshold:
-            print(f"⏳ Fairness trigger: Vehicle waited {max_red_wait_actual:.1f}s")
+        # Rule 2: Dominant better phase
+        if best_phase != self.current_phase and best_score >= current_score * 1.5 + 2.0:
+            self.next_phase = best_phase
             return True
-            
-        # Rule 5: Gap Logic (Actuated Control)
-        # If green is empty (no queue, no approaching), but red has ANYONE, switch
-        if green_score < 0.1 and red_score > 0:
-             print(f"🟢 Gap detected: Green empty, switching to serve red")
-             return True
-
-        # Rule 6: Weighted Pressure Comparison
-        # Switch if Red urgency significantly outweighs keeping Green
-        # We add a hysteresis factor (10-20%) to prevent rapid oscillation or changing for 1 car
-        hysteresis = 1.2 # Red must be 20% more urgent
         
-        if red_score > (green_score * hysteresis) + 2.0: # +2 buffer
-            print(f"⚖️ Pressure Switch: Red Score ({red_score:.1f}) > Green Score ({green_score:.1f})")
-            return True
-            
+        # Rule 3: Max Green Time
+        if state['phase_duration'] > self.max_green_time:
+             if best_phase != self.current_phase:
+                 self.next_phase = best_phase
+                 return True
+                 
         return False
 
     def _get_lanes_for_phase(self, phase_index: int) -> List[str]:
-        """Get list of lanes that have green in the specified phase"""
-        if phase_index >= len(self.phases):
-            return []
-            
-        phase_state = self.phases[phase_index].state
-        lanes = []
-        for i, lane in enumerate(self.controlled_lanes):
-            if i < len(phase_state) and phase_state[i] in ['G', 'g']:
-                lanes.append(lane)
-        return lanes
+        if phase_index >= len(self.phases): return []
+        state = self.phases[phase_index].state
+        green_lanes = []
+        try:
+            all_controlled = traci.trafficlight.getControlledLanes(self.tls_id)
+            for i, char in enumerate(state):
+                if char in ['G', 'g'] and i < len(all_controlled):
+                    green_lanes.append(all_controlled[i])
+        except:
+            pass
+        return list(set(green_lanes))
 
-    def _emergency_on_red_lanes(self, state: Dict) -> bool:
-        """Check if emergency vehicle is waiting on red lanes"""
-        next_phase_idx = self._get_next_green_phase()
-        next_lanes = self._get_lanes_for_phase(next_phase_idx)
-        
-        for lane in next_lanes:
-            vehicle_ids = traci.lane.getLastStepVehicleIDs(lane)
-            for veh_id in state['emergency_vehicles']:
-                if veh_id in vehicle_ids:
-                    return True
-        return False
-    
-    # ... helpers ...
     def _get_next_green_phase(self) -> int:
-        """Get index of next green phase"""
-        current_idx = self.green_phases.index(self.current_phase) if self.current_phase in self.green_phases else 0
-        next_idx = (current_idx + 1) % self.num_green_phases
-        return self.green_phases[next_idx]
-    
-    def _find_yellow_phase(self, from_phase: int, to_phase: int) -> Optional[int]:
-        """Find appropriate yellow phase"""
-        for i in range(from_phase + 1, min(from_phase + 3, len(self.phases))):
-            if i in self.yellow_phases:
-                return i
-        if self.yellow_phases:
-            return self.yellow_phases[0]
+        if not self.green_phases: return 0
+        try:
+            current_idx = self.green_phases.index(self.current_phase)
+            next_idx = (current_idx + 1) % len(self.green_phases)
+            return self.green_phases[next_idx]
+        except:
+            return self.green_phases[0]
+
+    def _find_yellow_phase(self, current_phase: int, next_phase: int) -> Optional[int]:
+        if self.yellow_phases: return self.yellow_phases[0]
         return None
     
-    def execute_action(self, current_time: float):
-        """Execute traffic light control action"""
-        state = self.get_traffic_state(current_time)
-        
-        if self.in_yellow:
-            if state['phase_duration'] >= self.yellow_time:
-                self.current_phase = self.next_phase
-                traci.trafficlight.setPhase(self.tls_id, self.current_phase)
-                self.in_yellow = False
-                self.next_phase = None
-                self.phase_start_time = current_time
-                self.total_switches += 1
-            return
-        
-        if self.decide_phase_change(state):
-            next_green = self._get_next_green_phase()
-            yellow_phase = self._find_yellow_phase(self.current_phase, next_green)
+    def _trigger_phase_change(self, current_time: float):
+        if self.next_phase is None:
+            self.next_phase = self._get_next_green_phase()
             
+        yellow_phase = self._find_yellow_phase(self.current_phase, self.next_phase)
+        
+        try:
             if yellow_phase is not None:
                 traci.trafficlight.setPhase(self.tls_id, yellow_phase)
                 self.in_yellow = True
-                self.next_phase = next_green
                 self.phase_start_time = current_time
             else:
-                self.current_phase = next_green
+                self.current_phase = self.next_phase
                 traci.trafficlight.setPhase(self.tls_id, self.current_phase)
                 self.phase_start_time = current_time
                 self.total_switches += 1
+        except Exception as e:
+            print(f"⚠️ Phase switch failed: {e}")
+
+    def execute_action(self, current_time: float):
+        """Execute heuristic control step with safety wrappers"""
+        try:
+            state = self.get_traffic_state(current_time)
+            
+            if self.in_yellow:
+                if current_time - self.phase_start_time >= self.yellow_time:
+                    self.current_phase = self.next_phase if self.next_phase is not None else self.current_phase
+                    traci.trafficlight.setPhase(self.tls_id, self.current_phase)
+                    self.in_yellow = False
+                    self.phase_start_time = current_time
+                    self.total_switches += 1
+            else:
+                if self.decide_phase_change(state):
+                    self._trigger_phase_change(current_time)
+        except traci.exceptions.FatalTraCIError:
+            raise # Let manager handle fatal error
+        except Exception as e:
+            print(f"⚠️ Agent iteration error: {e}")
     
     def get_metrics(self) -> Dict:
         return {
             'tls_id': self.tls_id,
+            'type': 'heuristic',
             'total_switches': self.total_switches,
-            'emergency_interventions': self.emergency_interventions,
-            'current_phase': self.current_phase,
-            'junction_type': self.junction_type
+            'current_phase': self.current_phase
         }

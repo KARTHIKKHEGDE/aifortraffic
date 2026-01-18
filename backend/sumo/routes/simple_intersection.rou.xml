@@ -23,21 +23,23 @@
     <route id="west_south" edges="west_in south_out"/>
     
     <!-- Traffic flows -->
-    <flow id="flow_ns" type="car" route="north_south" begin="0" end="900" probability="0.15"/>
-    <flow id="flow_ne" type="car" route="north_east" begin="0" end="900" probability="0.05"/>
-    <flow id="flow_nw" type="car" route="north_west" begin="0" end="900" probability="0.05"/>
+    <!-- Medium Traffic Flows (Target: ~50-60 vehicles) -->
+    <!-- Period 8 = 1 vehicle every 8 seconds per route -->
+    <flow id="flow_ns" type="car" route="north_south" begin="0" end="300" period="8"/>
+    <flow id="flow_ne" type="car" route="north_east" begin="0" end="300" period="20"/>
+    <flow id="flow_nw" type="car" route="north_west" begin="0" end="300" period="20"/>
     
-    <flow id="flow_sn" type="car" route="south_north" begin="0" end="900" probability="0.15"/>
-    <flow id="flow_se" type="car" route="south_east" begin="0" end="900" probability="0.05"/>
-    <flow id="flow_sw" type="car" route="south_west" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_sn" type="car" route="south_north" begin="0" end="300" period="8"/>
+    <flow id="flow_se" type="car" route="south_east" begin="0" end="300" period="20"/>
+    <flow id="flow_sw" type="car" route="south_west" begin="0" end="300" period="20"/>
     
-    <flow id="flow_ew" type="car" route="east_west" begin="0" end="900" probability="0.15"/>
-    <flow id="flow_en" type="car" route="east_north" begin="0" end="900" probability="0.05"/>
-    <flow id="flow_es" type="car" route="east_south" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_ew" type="car" route="east_west" begin="0" end="300" period="8"/>
+    <flow id="flow_en" type="car" route="east_north" begin="0" end="300" period="20"/>
+    <flow id="flow_es" type="car" route="east_south" begin="0" end="300" period="20"/>
     
-    <flow id="flow_we" type="car" route="west_east" begin="0" end="900" probability="0.15"/>
-    <flow id="flow_wn" type="car" route="west_north" begin="0" end="900" probability="0.05"/>
-    <flow id="flow_ws" type="car" route="west_south" begin="0" end="900" probability="0.05"/>
+    <flow id="flow_we" type="car" route="west_east" begin="0" end="300" period="8"/>
+    <flow id="flow_wn" type="car" route="west_north" begin="0" end="300" period="20"/>
+    <flow id="flow_ws" type="car" route="west_south" begin="0" end="300" period="20"/>
     
     <!-- Emergency vehicles (spawn every 2 minutes) -->
     <vehicle id="emergency_0" type="emergency" route="north_south" depart="120"/>

@@ -1,81 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
     <vType id="car" accel="2.5" decel="4.5" sigma="0.5" length="4.5" maxSpeed="13.89"/>
-    <vType id="emergency" accel="3.0" decel="5.0" length="5.0" maxSpeed="16.67" vClass="emergency" color="1,0,0"/>
+    <vType id="emergency" accel="3.0" decel="5.0" length="5.0" maxSpeed="16.67" vClass="emergency" color="1,0,0" gap="2.5"/>
 
-    <vehicle id="car_0" type="car" depart="0">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_1" type="car" depart="10">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_2" type="car" depart="20">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_3" type="car" depart="30">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_4" type="car" depart="40">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_5" type="car" depart="50">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_6" type="car" depart="60">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_7" type="car" depart="70">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_8" type="car" depart="80">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_9" type="car" depart="90">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_10" type="car" depart="100">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_11" type="car" depart="110">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_12" type="car" depart="120">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_13" type="car" depart="130">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_14" type="car" depart="140">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_15" type="car" depart="150">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_16" type="car" depart="160">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_17" type="car" depart="170">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_18" type="car" depart="180">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="car_19" type="car" depart="190">
-        <route edges="A0toA1 A1toA2"/>
-    </vehicle>
-    <vehicle id="emergency_0" type="emergency" depart="120">
-        <route edges="A0toA1 A1toB1"/>
-    </vehicle>
-    <vehicle id="emergency_1" type="emergency" depart="240">
-        <route edges="A0toA1 A1toB1"/>
-    </vehicle>
-    <vehicle id="emergency_2" type="emergency" depart="360">
-        <route edges="A0toA1 A1toB1"/>
-    </vehicle>
-    <vehicle id="emergency_3" type="emergency" depart="480">
-        <route edges="A0toA1 A1toB1"/>
-    </vehicle>
-    <vehicle id="emergency_4" type="emergency" depart="600">
-        <route edges="A0toA1 A1toB1"/>
-    </vehicle>
+    <trip id="car_0" type="car" depart="3.2" from="C0C1" to="D0C0" />
+    <trip id="car_1" type="car" depart="2.9" from="B1A1" to="D1C1" />
+    <trip id="car_2" type="car" depart="6.1" from="D2C2" to="B0B1" />
+    <trip id="car_3" type="car" depart="7.1" from="A2B2" to="B1B0" />
+    <trip id="car_4" type="car" depart="8.1" from="B1B0" to="A2B2" />
+    <trip id="car_5" type="car" depart="13.2" from="B2A2" to="D2C2" />
+    <trip id="car_6" type="car" depart="16.6" from="D2D1" to="B1B0" />
+    <trip id="car_7" type="car" depart="18.7" from="A0A1" to="C2B2" />
+    <trip id="car_8" type="car" depart="19.0" from="C2C1" to="D2C2" />
+    <trip id="car_9" type="car" depart="22.4" from="B1C1" to="C1D1" />
+    <trip id="car_10" type="car" depart="21.9" from="C0C1" to="B2B1" />
+    <trip id="car_11" type="car" depart="25.6" from="C1C0" to="D0C0" />
+    <trip id="car_12" type="car" depart="27.3" from="D1D0" to="A1A2" />
+    <trip id="car_13" type="car" depart="29.3" from="C2D2" to="C1C2" />
+    <trip id="car_14" type="car" depart="28.9" from="A0B0" to="B0B1" />
+    <trip id="car_15" type="car" depart="31.1" from="B2C2" to="D1C1" />
+    <trip id="car_16" type="car" depart="33.1" from="C1C2" to="C0B0" />
+    <trip id="car_17" type="car" depart="34.5" from="C2D2" to="A1A2" />
+    <trip id="car_18" type="car" depart="39.7" from="A1A0" to="D1C1" />
+    <trip id="car_19" type="car" depart="40.3" from="B1B0" to="C1B1" />
+    <trip id="car_20" type="car" depart="44.7" from="C2C1" to="B0A0" />
+    <trip id="car_21" type="car" depart="43.7" from="D1C1" to="A2B2" />
+    <trip id="car_22" type="car" depart="46.3" from="A1B1" to="C0D0" />
+    <trip id="car_23" type="car" depart="47.3" from="D0C0" to="B2A2" />
+    <trip id="car_24" type="car" depart="52.8" from="B0B1" to="D0D1" />
+    <trip id="car_25" type="car" depart="53.1" from="C0B0" to="A2A1" />
+    <trip id="car_26" type="car" depart="54.0" from="D2D1" to="B0C0" />
+    <trip id="car_27" type="car" depart="55.4" from="C1B1" to="D0C0" />
+    <trip id="car_28" type="car" depart="58.0" from="B0A0" to="C0C1" />
+    <trip id="car_29" type="car" depart="62.6" from="A0B0" to="C0C1" />
+    <trip id="car_30" type="car" depart="63.9" from="D2C2" to="B0A0" />
+    <trip id="car_31" type="car" depart="66.4" from="A1A0" to="D1D2" />
+    <trip id="car_32" type="car" depart="67.3" from="D1D0" to="C1B1" />
+    <trip id="car_33" type="car" depart="70.0" from="B0A0" to="B1A1" />
+    <trip id="car_34" type="car" depart="72.4" from="D0D1" to="A1A0" />
+    <trip id="car_35" type="car" depart="73.1" from="C1D1" to="B2C2" />
+    <trip id="car_36" type="car" depart="74.1" from="C0D0" to="C2D2" />
+    <trip id="car_37" type="car" depart="76.0" from="B2B1" to="C2B2" />
+    <trip id="car_38" type="car" depart="79.0" from="B1B2" to="C1B1" />
+    <trip id="car_39" type="car" depart="83.0" from="C1C2" to="D1D0" />
+    <trip id="car_40" type="car" depart="80.5" from="B0A0" to="C2C1" />
+    <trip id="car_41" type="car" depart="84.8" from="D0D1" to="A0A1" />
+    <trip id="car_42" type="car" depart="84.7" from="B1B0" to="C1C0" />
+    <trip id="car_43" type="car" depart="90.3" from="B0C0" to="A0B0" />
+    <trip id="car_44" type="car" depart="89.1" from="C2D2" to="A2A1" />
+    <trip id="car_45" type="car" depart="93.3" from="C0C1" to="C0D0" />
+    <trip id="car_46" type="car" depart="94.3" from="D1D2" to="B1B0" />
+    <trip id="car_47" type="car" depart="96.5" from="B1A1" to="C0B0" />
+    <trip id="car_48" type="car" depart="97.7" from="C0C1" to="B2C2" />
+    <trip id="car_49" type="car" depart="102.9" from="C1C2" to="C0B0" />
+    <trip id="car_50" type="car" depart="100.5" from="B1B2" to="D0C0" />
+    <trip id="car_51" type="car" depart="105.7" from="B2A2" to="B2C2" />
+    <trip id="car_52" type="car" depart="108.7" from="C1D1" to="C1C0" />
+    <trip id="car_53" type="car" depart="110.6" from="C2C1" to="A0A1" />
+    <trip id="car_54" type="car" depart="111.9" from="C0B0" to="A2A1" />
+    <trip id="car_55" type="car" depart="113.8" from="C1B1" to="B2C2" />
+    <trip id="car_56" type="car" depart="116.8" from="B2C2" to="B2A2" />
+    <trip id="car_57" type="car" depart="116.7" from="A2A1" to="C2C1" />
+    <trip id="car_58" type="car" depart="119.2" from="C0B0" to="B1C1" />
+    <trip id="car_59" type="car" depart="119.8" from="B1C1" to="D0D1" />
+    <trip id="car_60" type="car" depart="125.0" from="A1A0" to="C2C1" />
+    <trip id="car_61" type="car" depart="122.1" from="D2C2" to="C0C1" />
+    <trip id="car_62" type="car" depart="126.7" from="C2C1" to="D1C1" />
+    <trip id="car_63" type="car" depart="130.6" from="B2B1" to="B0A0" />
+    <trip id="car_64" type="car" depart="131.5" from="B2C2" to="C0B0" />
+    <trip id="car_65" type="car" depart="133.2" from="C1D1" to="A1A0" />
+    <trip id="car_66" type="car" depart="135.2" from="A0B0" to="B1B0" />
+    <trip id="car_67" type="car" depart="135.6" from="D2D1" to="D1D0" />
+    <trip id="car_68" type="car" depart="138.6" from="C0C1" to="B1B2" />
+    <trip id="car_69" type="car" depart="140.7" from="A2B2" to="B2C2" />
+    <trip id="car_70" type="car" depart="140.7" from="C1C0" to="D1D2" />
+    <trip id="car_71" type="car" depart="142.6" from="C0B0" to="D2D1" />
+    <trip id="car_72" type="car" depart="144.7" from="B2B1" to="C0B0" />
+    <trip id="car_73" type="car" depart="147.6" from="B0B1" to="A1A0" />
+    <trip id="car_74" type="car" depart="148.8" from="B0B1" to="C0B0" />
+    <trip id="car_75" type="car" depart="151.2" from="D2C2" to="D0D1" />
+    <trip id="car_76" type="car" depart="154.8" from="C1C0" to="C1D1" />
+    <trip id="car_77" type="car" depart="157.8" from="B0A0" to="A2B2" />
+    <trip id="car_78" type="car" depart="159.0" from="A1A0" to="D1C1" />
+    <trip id="car_79" type="car" depart="158.2" from="B1C1" to="C0B0" />
+    <trip id="car_80" type="car" depart="160.1" from="B0A0" to="C1B1" />
+    <trip id="car_81" type="car" depart="162.5" from="D1D0" to="A0A1" />
+    <trip id="car_82" type="car" depart="167.6" from="D2D1" to="C1C0" />
+    <trip id="car_83" type="car" depart="169.7" from="C2C1" to="A2A1" />
+    <trip id="car_84" type="car" depart="171.1" from="D1C1" to="C1D1" />
+    <trip id="car_85" type="car" depart="173.5" from="A2B2" to="A0A1" />
+    <trip id="car_86" type="car" depart="172.3" from="C1C0" to="D1D0" />
+    <trip id="car_87" type="car" depart="176.1" from="B1B2" to="A2A1" />
+    <trip id="car_88" type="car" depart="178.6" from="D1D2" to="D1D0" />
+    <trip id="car_89" type="car" depart="180.5" from="A2A1" to="C1C0" />
+    <trip id="car_90" type="car" depart="180.2" from="B0B1" to="A0A1" />
+    <trip id="car_91" type="car" depart="182.1" from="A0A1" to="C1C2" />
+    <trip id="car_92" type="car" depart="185.6" from="A2A1" to="A2B2" />
+    <trip id="car_93" type="car" depart="187.9" from="C1D1" to="D2D1" />
+    <trip id="car_94" type="car" depart="190.9" from="B1B2" to="B1B0" />
+    <trip id="car_95" type="car" depart="191.3" from="A2B2" to="D1D2" />
+    <trip id="car_96" type="car" depart="195.3" from="D2C2" to="C0B0" />
+    <trip id="car_97" type="car" depart="198.2" from="D2C2" to="D1D2" />
+    <trip id="car_98" type="car" depart="198.9" from="A2A1" to="B1C1" />
+    <trip id="car_99" type="car" depart="202.2" from="C2B2" to="D0D1" />
+    <trip id="car_100" type="car" depart="203.8" from="B1A1" to="B1B0" />
+    <trip id="car_101" type="car" depart="203.5" from="B2B1" to="A1A0" />
+    <trip id="car_102" type="car" depart="205.2" from="D0C0" to="C1C2" />
+    <trip id="car_103" type="car" depart="208.8" from="B0C0" to="C0C1" />
+    <trip id="car_104" type="car" depart="212.9" from="C0B0" to="D1C1" />
+    <trip id="car_105" type="car" depart="210.5" from="A2A1" to="D1D0" />
+    <trip id="car_106" type="car" depart="215.2" from="A0B0" to="B2A2" />
+    <trip id="car_107" type="car" depart="218.9" from="B1A1" to="C0D0" />
+    <trip id="car_108" type="car" depart="217.6" from="C2D2" to="C1C0" />
+    <trip id="car_109" type="car" depart="220.3" from="C1C0" to="C0D0" />
+    <trip id="car_110" type="car" depart="223.8" from="C1C0" to="A1B1" />
+    <trip id="car_111" type="car" depart="226.6" from="B1C1" to="D0C0" />
+    <trip id="car_112" type="car" depart="228.5" from="A0A1" to="A2B2" />
+    <trip id="car_113" type="car" depart="229.0" from="D2C2" to="A1A2" />
+    <trip id="car_114" type="car" depart="231.1" from="D0D1" to="A2A1" />
+    <trip id="car_115" type="car" depart="232.0" from="A0B0" to="A0A1" />
+    <trip id="car_116" type="car" depart="235.5" from="C1D1" to="D1C1" />
+    <trip id="car_117" type="car" depart="236.5" from="D1C1" to="B0B1" />
+    <trip id="car_118" type="car" depart="239.0" from="B1B0" to="C0C1" />
+    <trip id="car_119" type="car" depart="241.2" from="B0B1" to="B1B0" />
+    <trip id="car_120" type="car" depart="244.1" from="D0D1" to="B1C1" />
+    <trip id="car_121" type="car" depart="245.9" from="C2B2" to="D1D2" />
+    <trip id="car_122" type="car" depart="244.5" from="C2D2" to="A1A2" />
+    <trip id="car_123" type="car" depart="246.4" from="C1D1" to="D2C2" />
+    <trip id="car_124" type="car" depart="248.2" from="D1C1" to="B0C0" />
+    <trip id="car_125" type="car" depart="251.0" from="B0A0" to="D1D0" />
+    <trip id="car_126" type="car" depart="253.6" from="C1C2" to="C0D0" />
+    <trip id="car_127" type="car" depart="254.4" from="D0C0" to="A0A1" />
+    <trip id="car_128" type="car" depart="260.6" from="D0C0" to="C0D0" />
+    <trip id="car_129" type="car" depart="260.3" from="A0B0" to="C1D1" />
+    <trip id="car_130" type="car" depart="263.2" from="B2B1" to="D1D0" />
+    <trip id="car_131" type="car" depart="265.6" from="B1B2" to="A2A1" />
+    <trip id="car_132" type="car" depart="267.2" from="B1C1" to="A0A1" />
+    <trip id="car_133" type="car" depart="268.0" from="C2B2" to="C0D0" />
+    <trip id="car_134" type="car" depart="268.5" from="B1B2" to="B0C0" />
+    <trip id="car_135" type="car" depart="274.2" from="C1C2" to="C1C0" />
+    <trip id="car_136" type="car" depart="275.2" from="D0D1" to="B1B0" />
+    <trip id="car_137" type="car" depart="278.8" from="C1C2" to="B0C0" />
+    <trip id="car_138" type="car" depart="278.8" from="A2A1" to="D2C2" />
+    <trip id="car_139" type="car" depart="281.1" from="C1B1" to="C1D1" />
+    <trip id="car_140" type="car" depart="283.4" from="D0D1" to="D1C1" />
+    <trip id="car_141" type="car" depart="285.3" from="C1C0" to="C0B0" />
+    <trip id="car_142" type="car" depart="284.1" from="D2D1" to="A2B2" />
+    <trip id="car_143" type="car" depart="287.3" from="B2C2" to="C1C0" />
+    <trip id="car_144" type="car" depart="291.5" from="C1D1" to="D1C1" />
+    <trip id="car_145" type="car" depart="291.7" from="B1C1" to="B1B2" />
+    <trip id="car_146" type="car" depart="295.2" from="B1C1" to="D1C1" />
+    <trip id="car_147" type="car" depart="295.3" from="C0D0" to="D2D1" />
+    <trip id="car_148" type="car" depart="299.4" from="D1C1" to="C0D0" />
+    <trip id="car_149" type="car" depart="298.2" from="D0D1" to="A1A2" />
+    <trip id="car_150" type="car" depart="302.0" from="A1A0" to="C2C1" />
+    <trip id="car_151" type="car" depart="302.1" from="A2A1" to="B0B1" />
+    <trip id="car_152" type="car" depart="306.7" from="D1D0" to="A2A1" />
+    <trip id="car_153" type="car" depart="310.3" from="D1D2" to="B2A2" />
+    <trip id="car_154" type="car" depart="311.0" from="A2A1" to="A1A2" />
+    <trip id="car_155" type="car" depart="310.7" from="B2B1" to="B1B0" />
+    <trip id="car_156" type="car" depart="316.1" from="D0C0" to="A0B0" />
+    <trip id="car_157" type="car" depart="316.4" from="D1C1" to="C2D2" />
+    <trip id="car_158" type="car" depart="320.5" from="D2C2" to="B2C2" />
+    <trip id="car_159" type="car" depart="320.5" from="D2D1" to="D0C0" />
+    <trip id="car_160" type="car" depart="322.7" from="B2A2" to="D0C0" />
+    <trip id="car_161" type="car" depart="325.9" from="A1A0" to="C1C0" />
+    <trip id="car_162" type="car" depart="328.9" from="A1A2" to="A2A1" />
+    <trip id="car_163" type="car" depart="328.0" from="C0C1" to="C0B0" />
+    <trip id="car_164" type="car" depart="329.2" from="C0B0" to="D1D2" />
+    <trip id="car_165" type="car" depart="334.4" from="C1C0" to="B1B2" />
+    <trip id="car_166" type="car" depart="335.3" from="A1A2" to="B1A1" />
+    <trip id="car_167" type="car" depart="334.3" from="A1A2" to="D1D2" />
+    <trip id="car_168" type="car" depart="337.4" from="C0C1" to="D2D1" />
+    <trip id="car_169" type="car" depart="338.6" from="C1C2" to="A1A0" />
+    <trip id="car_170" type="car" depart="344.4" from="C1B1" to="D1D2" />
+    <trip id="car_171" type="car" depart="345.7" from="A1A0" to="B1B0" />
+    <trip id="car_172" type="car" depart="344.7" from="D2C2" to="B0C0" />
+    <trip id="car_173" type="car" depart="349.8" from="D2C2" to="A2B2" />
+    <trip id="car_174" type="car" depart="351.0" from="A2B2" to="C1C2" />
+    <trip id="car_175" type="car" depart="353.1" from="C1D1" to="B1B2" />
+    <trip id="car_176" type="car" depart="354.7" from="D1C1" to="D0D1" />
+    <trip id="car_177" type="car" depart="356.4" from="A0A1" to="B1B2" />
+    <trip id="car_178" type="car" depart="359.2" from="C0D0" to="B0B1" />
+    <trip id="car_179" type="car" depart="359.2" from="B1A1" to="C0C1" />
+    <trip id="emergency_0" type="emergency" depart="50.0" from="D2C2" to="B0A0" />
+    <trip id="emergency_1" type="emergency" depart="150.0" from="B1B0" to="B1A1" />
+    <trip id="emergency_2" type="emergency" depart="250.0" from="A1A2" to="B2A2" />
+    <trip id="emergency_3" type="emergency" depart="350.0" from="D2D1" to="B1C1" />
+    <trip id="emergency_4" type="emergency" depart="450.0" from="D1D0" to="C2D2" />
+    <trip id="emergency_5" type="emergency" depart="550.0" from="C2B2" to="A0B0" />
+    <trip id="emergency_6" type="emergency" depart="650.0" from="A1A0" to="D0C0" />
+    <trip id="emergency_7" type="emergency" depart="750.0" from="B1B2" to="C2C1" />
+    <trip id="emergency_8" type="emergency" depart="850.0" from="A1A2" to="C1D1" />
 </routes>
