@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<routes>
-    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" maxSpeed="50"/>
-    <flow id="north_normal" type="car" from="north_in" to="south_out" begin="0" end="600" vehsPerHour="300" departLane="best" departSpeed="max"/>
-    <flow id="east_normal" type="car" from="east_in" to="west_out" begin="0" end="600" vehsPerHour="300" departLane="best" departSpeed="max"/>
-    <flow id="west_normal" type="car" from="west_in" to="east_out" begin="0" end="600" vehsPerHour="300" departLane="best" departSpeed="max"/>
-</routes>
