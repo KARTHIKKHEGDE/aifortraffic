@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-01-19 04:05:12 by Eclipse SUMO netgenerate Version 1.18.0
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netgenerateConfiguration.xsd">
+<!-- generated on 2026-01-19 16:40:28 by Eclipse SUMO netconvert Version 1.18.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
-    <grid_network>
-        <grid value="true"/>
-        <grid.length value="200"/>
-        <grid.x-number value="5"/>
-        <grid.y-number value="5"/>
-    </grid_network>
+    <input>
+        <node-files value="grid_5x5.nod.xml"/>
+        <edge-files value="grid_5x5.edg.xml"/>
+        <connection-files value="grid_5x5_dedicated.con.xml"/>
+    </input>
 
     <output>
-        <output-file value="sumo/networks/grid_5x5.net.xml"/>
+        <output-file value="grid_5x5.net.xml"/>
     </output>
-
-    <building_defaults>
-        <default.lanenumber value="2"/>
-        <default.speed value="13.89"/>
-    </building_defaults>
 
     <tls_building>
         <tls.guess value="true"/>

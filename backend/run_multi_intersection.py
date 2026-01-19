@@ -7,7 +7,7 @@ import time
 from multi_agent_coordinator import MultiAgentCoordinator
 
 def run_multi_intersection(
-    network_file: str = 'sumo/network/grid_3x4.net.xml',  # 3x4 = 12 intersections
+    network_file: str = 'sumo/networks/grid_3x4.net.xml',  # 3x4 = 12 intersections
     route_file: str = 'sumo/routes/grid_3x4.rou.xml',
     duration: float = 1800.0,  # 30 minutes
     gui: bool = True,
@@ -100,7 +100,7 @@ def run_multi_intersection(
 
 if __name__ == '__main__':
     run_multi_intersection(
-        network_file='sumo/network/grid_3x4.net.xml',
+        network_file='sumo/networks/grid_3x4.net.xml',
         route_file='sumo/routes/grid_3x4.rou.xml',
         gui=True,
         enable_coordination=True

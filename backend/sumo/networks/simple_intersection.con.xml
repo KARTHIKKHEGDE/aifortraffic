@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connections>
+    <!-- NORTH APPROACH -->
+    <!-- Lane 0: Straight + Right -->
+    <connection from="north_in" to="south_out" fromLane="0" toLane="0" dir="s"/>
+    <connection from="north_in" to="west_out" fromLane="0" toLane="0" dir="r"/>
+    
+    <!-- Lane 1: Left ONLY -->
+    <connection from="north_in" to="east_out" fromLane="1" toLane="1" dir="l"/>
+    
+    <!-- SOUTH APPROACH -->
+    <!-- Lane 0: Straight + Right -->
+    <connection from="south_in" to="north_out" fromLane="0" toLane="0" dir="s"/>
+    <connection from="south_in" to="east_out" fromLane="0" toLane="0" dir="r"/>
+    
+    <!-- Lane 1: Left ONLY -->
+    <connection from="south_in" to="west_out" fromLane="1" toLane="1" dir="l"/>
+    
+    <!-- EAST APPROACH -->
+    <!-- Lane 0: Straight + Right -->
+    <connection from="east_in" to="west_out" fromLane="0" toLane="0" dir="s"/>
+    <connection from="east_in" to="north_out" fromLane="0" toLane="0" dir="r"/>
+    
+    <!-- Lane 1: Left ONLY -->
+    <connection from="east_in" to="south_out" fromLane="1" toLane="1" dir="l"/>
+    
+    <!-- WEST APPROACH -->
+    <!-- Lane 0: Straight + Right -->
+    <connection from="west_in" to="east_out" fromLane="0" toLane="0" dir="s"/>
+    <connection from="west_in" to="south_out" fromLane="0" toLane="0" dir="r"/>
+    
+    <!-- Lane 1: Left ONLY -->
+    <connection from="west_in" to="north_out" fromLane="1" toLane="1" dir="l"/>
+</connections>

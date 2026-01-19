@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-01-19 16:37:09 by Eclipse SUMO netconvert Version 1.18.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="grid_3x4_temp.net.xml"/>
+    </input>
+
+    <output>
+        <plain-output-prefix value="grid_3x4"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="0"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.50"/>
+        <rectangular-lane-cut value="0"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="0"/>
+    </pedestrian>
+
+</configuration>
+-->
+
+<nodes version="1.16" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/nodes_file.xsd">
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,400.00,600.00" origBoundary="0.00,0.00,400.00,600.00" projParameter="!"/>
+
+    <node id="A0" x="0.00" y="0.00" type="priority"/>
+    <node id="A1" x="0.00" y="200.00" type="traffic_light" tl="A1"/>
+    <node id="A2" x="0.00" y="400.00" type="traffic_light" tl="A2"/>
+    <node id="A3" x="0.00" y="600.00" type="priority"/>
+    <node id="B0" x="200.00" y="0.00" type="traffic_light" tl="B0"/>
+    <node id="B1" x="200.00" y="200.00" type="traffic_light" tl="B1"/>
+    <node id="B2" x="200.00" y="400.00" type="traffic_light" tl="B2"/>
+    <node id="B3" x="200.00" y="600.00" type="traffic_light" tl="B3"/>
+    <node id="C0" x="400.00" y="0.00" type="priority"/>
+    <node id="C1" x="400.00" y="200.00" type="traffic_light" tl="C1"/>
+    <node id="C2" x="400.00" y="400.00" type="traffic_light" tl="C2"/>
+    <node id="C3" x="400.00" y="600.00" type="priority"/>
+</nodes>
