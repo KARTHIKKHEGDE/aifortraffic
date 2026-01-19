@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" maxSpeed="50"/>
+    <flow id="north_background" type="car" from="north_in" to="south_out" begin="0" end="600" vehsPerHour="60" departLane="best" departSpeed="max"/>
+    <flow id="south_background" type="car" from="south_in" to="north_out" begin="0" end="600" vehsPerHour="60" departLane="best" departSpeed="max"/>
+    <flow id="east_background" type="car" from="east_in" to="west_out" begin="0" end="600" vehsPerHour="60" departLane="best" departSpeed="max"/>
+    <flow id="west_background" type="car" from="west_in" to="east_out" begin="0" end="600" vehsPerHour="60" departLane="best" departSpeed="max"/>
+    <flow id="burst_north_0" type="car" from="north_in" to="south_out" begin="0" end="5" number="20" departLane="best" departSpeed="max"/>
+    <flow id="burst_east_1" type="car" from="east_in" to="west_out" begin="30" end="35" number="15" departLane="best" departSpeed="max"/>
+    <flow id="burst_south_2" type="car" from="south_in" to="north_out" begin="60" end="65" number="25" departLane="best" departSpeed="max"/>
+    <flow id="burst_west_3" type="car" from="west_in" to="east_out" begin="90" end="95" number="10" departLane="best" departSpeed="max"/>
+    <flow id="burst_north_4" type="car" from="north_in" to="south_out" begin="120" end="125" number="18" departLane="best" departSpeed="max"/>
+    <flow id="burst_east_5" type="car" from="east_in" to="west_out" begin="150" end="155" number="22" departLane="best" departSpeed="max"/>
+</routes>

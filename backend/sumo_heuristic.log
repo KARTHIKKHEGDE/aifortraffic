@@ -1,19 +1,16 @@
-***Starting server on port 53059 ***
-Loading net-file from 'C:\Users\91948\OneDrive\Desktop\aifortraffic\backend\sumo\networks\grid_3x4.net.xml' ... done (6ms).
+***Starting server on port 61323 ***
+Loading net-file from 'C:\Users\91948\OneDrive\Desktop\aifortraffic\backend\sumo\networks\simple_intersection.net.xml' ... done (4ms).
 Loading done.
 Simulation started with time: 0.00.
-Error: tcpip::Socket::recvAndCheck @ recv: Socket reset by peer
-Quitting (on error).
-Simulation ended at time: 207.40
+Simulation ended at time: 189.50
+Reason: TraCI requested termination.
 Performance: 
- Duration: 479.02s
- TraCI-Duration: 446.89s
- Real time factor: 0.432971
- UPS: 245.574261
+ Duration: 308.97s
+ TraCI-Duration: 291.00s
+ Real time factor: 0.613334
+ UPS: 225.561306
 Vehicles: 
- Inserted: 131 (Loaded: 199)
- Running: 45
+ Inserted: 177 (Loaded: 179)
+ Running: 49
  Waiting: 0
 
-DijkstraRouter answered 131 queries and explored 19.74 edges on average.
-DijkstraRouter spent 0.00s answering queries (0.01ms on average).

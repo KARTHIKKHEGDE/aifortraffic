@@ -330,17 +330,35 @@ class DualSimulationManager:
             if fixed_avg_wait > 0 else 0.0
         )
         
+        # Aggregate heuristic agent stats
+        total_early_term = sum(agent.early_terminations for agent in self.heuristic_agents.values())
+        total_extended = sum(agent.extended_phases for agent in self.heuristic_agents.values())
+        total_emergency = sum(agent.emergency_interventions for agent in self.heuristic_agents.values())
+        total_starvation = sum(agent.starvation_prevents for agent in self.heuristic_agents.values())
+        total_congestion = sum(agent.congestion_responses for agent in self.heuristic_agents.values())
+        total_heuristic_switches = sum(agent.total_switches for agent in self.heuristic_agents.values())
+        
+        # Fixed timer switches for comparison
+        total_fixed_switches = sum(agent.total_switches for agent in self.fixed_agents.values())
+        
         return {
             'time': round(self.current_time, 1),
             'fixed': {
                 'avg_wait_time': round(fixed_avg_wait, 2),
                 'total_arrived': self.fixed_metrics['total_arrived'],
-                'active_vehicles': fixed_active
+                'active_vehicles': fixed_active,
+                'total_switches': total_fixed_switches
             },
             'heuristic': {
                 'avg_wait_time': round(heuristic_avg_wait, 2),
                 'total_arrived': self.heuristic_metrics['total_arrived'],
-                'active_vehicles': heuristic_active
+                'active_vehicles': heuristic_active,
+                'total_switches': total_heuristic_switches,
+                'early_terminations': total_early_term,
+                'extended_phases': total_extended,
+                'emergency_interventions': total_emergency,
+                'starvation_prevents': total_starvation,
+                'congestion_responses': total_congestion
             },
             'improvement_percentage': round(improvement, 2),
             'throughput_delta': self.heuristic_metrics['total_arrived'] - self.fixed_metrics['total_arrived']

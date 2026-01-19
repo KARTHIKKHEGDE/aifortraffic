@@ -159,6 +159,42 @@ async def get_scenarios():
                 "agents": 12,
                 "network": "sumo/networks/grid_3x4.net.xml",
                 "routes": "sumo/routes/grid_3x4.rou.xml"
+            },
+            {
+                "id": "rush_hour",
+                "name": "SCENARIO 1: RUSH HOUR IMBALANCE",
+                "difficulty": "VISUAL DEMO",
+                "complexity": "HIGH IMPACT (Queue Management)",
+                "agents": 1,
+                "network": "sumo/networks/simple_intersection.net.xml",
+                "routes": "sumo/routes/rush_hour_imbalance.rou.xml"
+            },
+            {
+                "id": "random_bursts",
+                "name": "SCENARIO 2: RANDOM BURSTS",
+                "difficulty": "VISUAL DEMO",
+                "complexity": "HIGH IMPACT (Responsiveness)",
+                "agents": 1,
+                "network": "sumo/networks/simple_intersection.net.xml",
+                "routes": "sumo/routes/random_bursts.rou.xml"
+            },
+            {
+                "id": "empty_lane",
+                "name": "SCENARIO 3: EMPTY LANE SKIPPING",
+                "difficulty": "VISUAL DEMO",
+                "complexity": "HIGH IMPACT (Efficiency)",
+                "agents": 1,
+                "network": "sumo/networks/simple_intersection.net.xml",
+                "routes": "sumo/routes/empty_lane.rou.xml"
+            },
+            {
+                "id": "emergency",
+                "name": "SCENARIO 4: EMERGENCY PRIORITY",
+                "difficulty": "VISUAL DEMO",
+                "complexity": "HIGH IMPACT (Life Saving)",
+                "agents": 1,
+                "network": "sumo/networks/simple_intersection.net.xml",
+                "routes": "sumo/routes/emergency_vehicle.rou.xml"
             }
         ]
     }
