@@ -125,7 +125,7 @@ class DualSimulationManager:
             '--no-warnings',
             '--start',
             '--quit-on-end',
-            '--delay', '50',
+            '--delay', '0',
             '--window-size', '800,600',
             '--window-pos', '50,50',
             '--gui-settings-file', self._create_gui_settings('fixed'),
@@ -166,7 +166,7 @@ class DualSimulationManager:
             '--no-warnings',
             '--start',
             '--quit-on-end',
-            '--delay', '50',
+            '--delay', '0',
             '--window-size', '800,600',
             '--window-pos', '900,50',
             '--gui-settings-file', self._create_gui_settings('heuristic'),
@@ -209,7 +209,7 @@ class DualSimulationManager:
 <viewsettings>
     <scheme name="real world"/>
     <viewport zoom="150" x="0" y="0"/>
-    <delay value="50"/>
+    <delay value="0"/>
 </viewsettings>"""
         
         with open(settings_file, 'w') as f:

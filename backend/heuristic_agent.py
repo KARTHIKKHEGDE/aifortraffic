@@ -33,7 +33,7 @@ class HeuristicAgent:
         self.tls_id = tls_id
         
         # === TIMING PARAMETERS ===
-        self.min_green_time = 12.0  # Increased to reduce yellow-time penalties
+        self.min_green_time = 5.0  # Reduced to show responsiveness
         self.max_green_time = 120.0  # Maximum before forced switch
         self.yellow_time = 3.0
         self.all_red_clearance = 2.0  # Safety clearance between conflicts
@@ -43,9 +43,9 @@ class HeuristicAgent:
         self.emergency_priority = True
         
         # Congestion
-        self.critical_queue_threshold = 25  # Vehicles
-        self.heavy_congestion_threshold = 15
-        self.light_congestion_threshold = 5
+        self.critical_queue_threshold = 8  # Lowered to react faster
+        self.heavy_congestion_threshold = 5 # Lowered
+        self.light_congestion_threshold = 2 # Lowered
         
         # Waiting Time
         self.max_wait_time = 180.0  # 3 minutes - absolute max
@@ -646,8 +646,19 @@ class HeuristicAgent:
     
     def _find_yellow_phase(self, current_phase: int, next_phase: int) -> Optional[int]:
         """Find appropriate yellow phase between current and next"""
+        # In most standard SUMO programs, the yellow phase immediately follows the green phase
+        candidate_yellow = (current_phase + 1) % len(self.phases)
+        
+        if candidate_yellow in self.yellow_phases:
+            return candidate_yellow
+            
+        # Fallback: if we can't find a sequential yellow, try to find one that matches the current movement
+        # This is harder, but for now we'll defaults to the sequential one or None
         if self.yellow_phases:
+            # Dangerous to pick arbitrary yellow, but better than nothing?
+            # Actually, standard logic is almost always Green -> Yellow -> Red
             return self.yellow_phases[0]
+            
         return None
     
     def _trigger_phase_change(self, current_time: float):
@@ -687,6 +698,9 @@ class HeuristicAgent:
                 # Decision logic
                 if self.decide_phase_change(state):
                     self._trigger_phase_change(current_time)
+                else:
+                    # Enforce current phase to prevent SUMO auto-advance
+                    traci.trafficlight.setPhase(self.tls_id, self.current_phase)
                     
         except traci.exceptions.FatalTraCIError:
             raise

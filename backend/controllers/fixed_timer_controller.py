@@ -88,9 +88,11 @@ class FixedTimerController:
     
     def _find_yellow_phase(self):
         """Find appropriate yellow phase"""
-        for i in range(self.current_phase + 1, min(self.current_phase + 3, len(self.phases))):
-            if i in self.yellow_phases:
-                return i
+        # Check next sequential phase (wrapping around)
+        candidate_idx = (self.current_phase + 1) % len(self.phases)
+        if candidate_idx in self.yellow_phases:
+            return candidate_idx
+            
         return self.yellow_phases[0] if self.yellow_phases else None
     
     def get_metrics(self) -> Dict:

@@ -47,7 +47,7 @@ def run_single_intersection(
         '--no-warnings',
         '--quit-on-end',
         '--start',
-        '--delay', '50' if gui else '0'
+        '--delay', '0'
     ]
     
     try:
@@ -70,10 +70,15 @@ def run_single_intersection(
         # Discover agents
         coordinator.discover_and_create_agents()
         
-        print(f"\n▶️  Running simulation...\n")
+        print(f"\n▶️  Running simulation (Target Speed: 3x Real-Time)...\n")
         
         current_time = 0.0
         last_print = 0.0
+        
+        # Timing for speed control
+        target_speed_ratio = 3.0
+        start_wall_time = time.perf_counter()
+        start_sim_time = 0.0
         
         while current_time < duration:
             # Step all agents
@@ -83,6 +88,16 @@ def run_single_intersection(
             traci.simulationStep()
             
             current_time += 0.1
+            
+            # --- Speed Control ---
+            sim_elapsed = current_time - start_sim_time
+            target_wall_elapsed = sim_elapsed / target_speed_ratio
+            actual_wall_elapsed = time.perf_counter() - start_wall_time
+            
+            sleep_needed = target_wall_elapsed - actual_wall_elapsed
+            if sleep_needed > 0:
+                time.sleep(sleep_needed)
+            # ---------------------
             
             # Print status every 10 seconds
             if current_time - last_print >= 10.0:

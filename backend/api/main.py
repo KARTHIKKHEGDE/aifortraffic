@@ -9,6 +9,7 @@ from pydantic import BaseModel
 import asyncio
 import sys
 import os
+import time
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -99,17 +100,51 @@ async def simulation_websocket(websocket: WebSocket):
     await websocket.accept()
     
     try:
+        # Speed control variables
+        target_speed_ratio = 3.0  # 3x real time
+        timing_initialized = False
+        start_wall_time = 0.0
+        start_sim_time = 0.0
+
         while True:
             if not current_simulation or not current_simulation.is_running:
                 await websocket.send_json({
                     "status": "stopped",
                     "message": "No simulation running"
                 })
+                timing_initialized = False # Reset timing when stopped
                 await asyncio.sleep(1)
                 continue
             
+            # Initialize timing reference points
+            if not timing_initialized:
+                start_wall_time = time.perf_counter()
+                start_sim_time = current_simulation.current_time
+                timing_initialized = True
+
             # Step simulation
             comparison = current_simulation.step()
+            
+            # --- Adaptive Speed Control (3x) ---
+            # 1. Calculate how much time has passed in the simulation
+            sim_elapsed = comparison['time'] - start_sim_time
+            
+            # 2. Calculate how much real time *should* have passed (SimTime / 3.0)
+            target_wall_elapsed = sim_elapsed / target_speed_ratio
+            
+            # 3. Calculate actual real time elapsed
+            current_wall_time = time.perf_counter()
+            actual_wall_elapsed = current_wall_time - start_wall_time
+            
+            # 4. Sleep difference to sync
+            sleep_needed = target_wall_elapsed - actual_wall_elapsed
+            
+            if sleep_needed > 0:
+                await asyncio.sleep(sleep_needed)
+            else:
+                # We are running slower than 3x (CPU bound), yield briefly to event loop
+                await asyncio.sleep(0.001)
+            # -----------------------------------
             
             # Send update to frontend
             await websocket.send_json({
@@ -124,9 +159,9 @@ async def simulation_websocket(websocket: WebSocket):
                     "data": comparison
                 })
                 break
-            
-            # Run at 10 FPS
-            await asyncio.sleep(0.1)
+             
+            # Removed fixed 10 FPS sleep
+             
     
     except WebSocketDisconnect:
         print("Client disconnected")
