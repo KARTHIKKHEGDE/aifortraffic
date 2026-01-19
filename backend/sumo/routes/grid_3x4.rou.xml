@@ -3,6 +3,108 @@
     <vType id="car" accel="2.5" decel="4.5" sigma="0.5" length="4.5" maxSpeed="13.89"/>
     <vType id="emergency" accel="3.0" decel="5.0" length="5.0" maxSpeed="16.67" vClass="emergency" color="1,0,0" gap="2.5"/>
 
+    <!-- INITIAL LOAD: 100 VEHICLES AT DEPART 0 -->
+    <trip id="init_0" type="car" depart="0.0" from="A0A1" to="D0C0" />
+    <trip id="init_1" type="car" depart="0.0" from="B0B1" to="D1C1" />
+    <trip id="init_2" type="car" depart="0.0" from="C0C1" to="D2C2" />
+    <trip id="init_3" type="car" depart="0.0" from="D0D1" to="A2B2" />
+    <trip id="init_4" type="car" depart="0.0" from="A1A0" to="D1D0" />
+    <trip id="init_5" type="car" depart="0.0" from="B1B0" to="D1D0" />
+    <trip id="init_6" type="car" depart="0.0" from="C1C0" to="A2A1" />
+    <trip id="init_7" type="car" depart="0.0" from="D1D0" to="C2C1" />
+    <trip id="init_8" type="car" depart="0.0" from="A2A1" to="B2B1" />
+    <trip id="init_9" type="car" depart="0.0" from="B2B1" to="C2B2" />
+    <trip id="init_10" type="car" depart="0.0" from="C2C1" to="D2D1" />
+    <trip id="init_11" type="car" depart="0.0" from="D2D1" to="A2B2" />
+    <trip id="init_12" type="car" depart="0.0" from="A1A2" to="D1D2" />
+    <trip id="init_13" type="car" depart="0.0" from="B1B2" to="C1C2" />
+    <trip id="init_14" type="car" depart="0.0" from="C1C2" to="B1B2" />
+    <trip id="init_15" type="car" depart="0.0" from="D1D2" to="A1A2" />
+    <trip id="init_16" type="car" depart="0.0" from="A0B0" to="C0B0" />
+    <trip id="init_17" type="car" depart="0.0" from="B0C0" to="D0C0" />
+    <trip id="init_18" type="car" depart="0.0" from="C0D0" to="A0A1" />
+    <trip id="init_19" type="car" depart="0.0" from="D0C0" to="B0B1" />
+    <trip id="init_20" type="car" depart="0.0" from="C0B0" to="A0B0" />
+    <trip id="init_21" type="car" depart="0.0" from="B0A0" to="C0B0" />
+    <trip id="init_22" type="car" depart="0.0" from="A1B1" to="C1B1" />
+    <trip id="init_23" type="car" depart="0.0" from="B1C1" to="D1C1" />
+    <trip id="init_24" type="car" depart="0.0" from="C1D1" to="B1C1" />
+    <trip id="init_25" type="car" depart="0.0" from="D1C1" to="C1D1" />
+    <trip id="init_26" type="car" depart="0.0" from="C1B1" to="A1B1" />
+    <trip id="init_27" type="car" depart="0.0" from="B1A1" to="C1B1" />
+    <trip id="init_28" type="car" depart="0.0" from="A2B2" to="C2B2" />
+    <trip id="init_29" type="car" depart="0.0" from="B2C2" to="D2C2" />
+    <trip id="init_30" type="car" depart="0.0" from="C2D2" to="B2C2" />
+    <trip id="init_31" type="car" depart="0.0" from="D2C2" to="C2D2" />
+    <trip id="init_32" type="car" depart="0.0" from="C2B2" to="A2B2" />
+    <trip id="init_33" type="car" depart="0.0" from="B2A2" to="C2B2" />
+    <trip id="init_34" type="car" depart="0.5" from="A0A1" to="B0B1" />
+    <trip id="init_35" type="car" depart="0.5" from="B0B1" to="C0C1" />
+    <trip id="init_36" type="car" depart="0.5" from="C0C1" to="D0D1" />
+    <trip id="init_37" type="car" depart="0.5" from="D0D1" to="A0A1" />
+    <trip id="init_38" type="car" depart="1.0" from="A1A0" to="B1B0" />
+    <trip id="init_39" type="car" depart="1.0" from="B1B0" to="C1C0" />
+    <trip id="init_40" type="car" depart="1.0" from="C1C0" to="D1D0" />
+    <trip id="init_41" type="car" depart="1.0" from="D1D0" to="A1A0" />
+    <trip id="init_42" type="car" depart="0.5" from="A2A1" to="B2B1" />
+    <trip id="init_43" type="car" depart="0.5" from="B2B1" to="C2C1" />
+    <trip id="init_44" type="car" depart="0.5" from="C2C1" to="D2D1" />
+    <trip id="init_45" type="car" depart="0.5" from="D2D1" to="A2A1" />
+    <trip id="init_46" type="car" depart="0.2" from="A1B1" to="B1C1" />
+    <trip id="init_47" type="car" depart="0.2" from="B1C1" to="C1D1" />
+    <trip id="init_48" type="car" depart="0.2" from="C1D1" to="D1C1" />
+    <trip id="init_49" type="car" depart="0.2" from="D1C1" to="B1C1" />
+    <trip id="init_50" type="car" depart="0.1" from="C1B1" to="B1B0" />
+    <trip id="init_51" type="car" depart="0.1" from="B1A1" to="A1A0" />
+    <trip id="init_52" type="car" depart="0.3" from="A2B2" to="B2C2" />
+    <trip id="init_53" type="car" depart="0.3" from="B2C2" to="C2D2" />
+    <trip id="init_54" type="car" depart="0.3" from="C2D2" to="D2C2" />
+    <trip id="init_55" type="car" depart="0.4" from="C2B2" to="B2A2" />
+    <trip id="init_56" type="car" depart="0.4" from="B2A2" to="A2B2" />
+    <trip id="init_57" type="car" depart="0.4" from="A0B0" to="B0B1" />
+    <trip id="init_58" type="car" depart="0.4" from="B0B1" to="B1B2" />
+    <trip id="init_59" type="car" depart="0.4" from="B1B2" to="B2B1" />
+    <trip id="init_60" type="car" depart="0.1" from="D0D1" to="D1D2" />
+    <trip id="init_61" type="car" depart="0.1" from="D1D2" to="C1C2" />
+    <trip id="init_62" type="car" depart="0.1" from="C1C2" to="D1D2" />
+    <trip id="init_63" type="car" depart="0.1" from="D1D0" to="C1C0" />
+    <trip id="init_64" type="car" depart="0.2" from="A0A1" to="A1A2" />
+    <trip id="init_65" type="car" depart="0.2" from="A1A2" to="B1C1" />
+    <trip id="init_66" type="car" depart="0.2" from="B1C1" to="C1D1" />
+    <trip id="init_67" type="car" depart="0.2" from="C1D1" to="D2D1" />
+    <trip id="init_68" type="car" depart="0.5" from="B1B0" to="A1A0" />
+    <trip id="init_69" type="car" depart="0.5" from="C1C0" to="B1B0" />
+    <trip id="init_70" type="car" depart="0.5" from="D1D0" to="C1C0" />
+    <trip id="init_71" type="car" depart="0.3" from="A0A1" to="C0C1" />
+    <trip id="init_72" type="car" depart="0.3" from="C0C1" to="D0C0" />
+    <trip id="init_73" type="car" depart="0.3" from="D0C0" to="B2B1" />
+    <trip id="init_74" type="car" depart="0.3" from="B2B1" to="A1A0" />
+    <trip id="init_75" type="car" depart="0.1" from="C1D1" to="D1C1" />
+    <trip id="init_76" type="car" depart="0.1" from="D1C1" to="B0B1" />
+    <trip id="init_77" type="car" depart="0.1" from="B0B1" to="A1A0" />
+    <trip id="init_78" type="car" depart="0.1" from="C0C1" to="B1B2" />
+    <trip id="init_79" type="car" depart="0.2" from="B1B2" to="A2A1" />
+    <trip id="init_80" type="car" depart="0.2" from="A2A1" to="C1C0" />
+    <trip id="init_81" type="car" depart="0.2" from="D1D2" to="D1D0" />
+    <trip id="init_82" type="car" depart="0.1" from="A2B2" to="D1D2" />
+    <trip id="init_83" type="car" depart="0.1" from="D1D2" to="B2A2" />
+    <trip id="init_84" type="car" depart="0.1" from="A1A2" to="B1A1" />
+    <trip id="init_85" type="car" depart="0.2" from="B1A1" to="C0B0" />
+    <trip id="init_86" type="car" depart="0.2" from="C0B0" to="D1C1" />
+    <trip id="init_87" type="car" depart="0.2" from="D1C1" to="B0C0" />
+    <trip id="init_88" type="car" depart="0.1" from="B0C0" to="A0B0" />
+    <trip id="init_89" type="car" depart="0.1" from="A0B0" to="C1D1" />
+    <trip id="init_90" type="car" depart="0.1" from="C1D1" to="D1C1" />
+    <trip id="init_91" type="car" depart="0.1" from="B1B2" to="B0C0" />
+    <trip id="init_92" type="car" depart="0.1" from="D1C1" to="D0D1" />
+    <trip id="init_93" type="car" depart="0.1" from="D0D1" to="B1B0" />
+    <trip id="init_94" type="car" depart="0.1" from="B1B0" to="C2C1" />
+    <trip id="init_95" type="car" depart="0.1" from="C2C1" to="A1A0" />
+    <trip id="init_96" type="car" depart="0.1" from="A1A2" to="D1D2" />
+    <trip id="init_97" type="car" depart="0.1" from="D1D2" to="C1C2" />
+    <trip id="init_98" type="car" depart="0.1" from="C1C2" to="A1A0" />
+    <trip id="init_99" type="car" depart="0.1" from="B0A0" to="D1D0" />
+
     <trip id="car_0" type="car" depart="3.2" from="C0C1" to="D0C0" />
     <trip id="car_1" type="car" depart="2.9" from="B1A1" to="D1C1" />
     <trip id="car_2" type="car" depart="6.1" from="D2C2" to="B0B1" />
@@ -183,6 +285,20 @@
     <trip id="car_177" type="car" depart="356.4" from="A0A1" to="B1B2" />
     <trip id="car_178" type="car" depart="359.2" from="C0D0" to="B0B1" />
     <trip id="car_179" type="car" depart="359.2" from="B1A1" to="C0C1" />
+
+    <!-- HEAVY ARTERIAL FLOWS FOR STRESS TESTING -->
+    <!-- North-South Arterial -->
+    <flow id="flow_ns_heavy" type="car" begin="0" end="900" period="3.0" from="A0A1" to="A2A1"/>
+    <flow id="flow_sn_heavy" type="car" begin="0" end="900" period="3.5" from="D0D1" to="D2D1"/>
+    
+    <!-- East-West Arterial -->
+    <flow id="flow_ew_heavy" type="car" begin="0" end="900" period="3.0" from="C0B0" to="C2B2"/>
+    <flow id="flow_we_heavy" type="car" begin="0" end="900" period="3.5" from="B0C0" to="B2C2"/>
+
+    <!-- Supplemental Cross-Flows -->
+    <flow id="flow_cross1" type="car" begin="100" end="900" period="5.0" from="A1A0" to="D1D2"/>
+    <flow id="flow_cross2" type="car" begin="150" end="900" period="5.0" from="D1D0" to="A1A2"/>
+
     <trip id="emergency_0" type="emergency" depart="50.0" from="D2C2" to="B0A0" />
     <trip id="emergency_1" type="emergency" depart="150.0" from="B1B0" to="B1A1" />
     <trip id="emergency_2" type="emergency" depart="250.0" from="A1A2" to="B2A2" />

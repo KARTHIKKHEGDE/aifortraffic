@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Activity, Settings, BarChart2, Monitor, Layout, ArrowRight, ShieldCheck, Zap, Clock } from 'lucide-react';
-import { startSimulation, stopSimulation, getSimulationStatus, getScenarios, type Scenario, simulationAPI } from './api/simulation';
+import { Activity, Settings, BarChart2, Monitor, Layout, ArrowRight, ShieldCheck, Zap, Clock, Car } from 'lucide-react';
+import { startSimulation, stopSimulation, getScenarios, type Scenario, simulationAPI } from './api/simulation';
 import TrafficDashboard from './components/TrafficDashboard';
 
 // --- Types ---
@@ -319,6 +319,24 @@ function App() {
                 <div className="stat-card cyan">
                   <div className="label">HEURISTIC AI AVG WAIT</div>
                   <div className="value">{simState.metrics.heuristic.waitingTime.toFixed(1)}s</div>
+                </div>
+
+                <div className="stat-card" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'var(--glass-border)' }}>
+                  <div className="flex-center gap-2 mb-2" style={{ justifyContent: 'flex-start' }}>
+                    <Car size={14} className="text-cyan" />
+                    <span className="label" style={{ fontSize: '0.65rem' }}>Active Vehicles</span>
+                  </div>
+                  <div className="flex-center" style={{ justifyContent: 'space-between' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: '0.6rem', color: 'var(--accent-critical)' }}>FIXED</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 600 }}>{simState.metrics.fixed.queueLength}</div>
+                    </div>
+                    <div style={{ width: '1px', height: '20px', background: 'var(--glass-border)' }} />
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: '0.6rem', color: 'var(--accent-cyan)' }}>AI</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 600 }}>{simState.metrics.heuristic.queueLength}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </aside>
